@@ -10,19 +10,28 @@ const Container = styled.div`
 `;
 
 const Card = () => {
-    const [boardState, setBoardState] = useState('');
+    const [placeholderDisplay, setDisplay] = useState(true);
+    const [text, setText] = useState('');
+
+    // callbacks for AddList
+    const handleAddListClick = () => !text ? '' : setDisplay(false);
+    const setTitleText = (e) => setText(e.target.value)
 
     return(
         <React.Fragment>
-            <AddList />
+            <AddList 
+                handleClick={handleAddListClick} 
+                handleChange={setTitleText} 
+                display={placeholderDisplay}
+                text={text}/>
             <Droppable droppableId='test'>
                 {provided => 
                     <Container
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                     >
-                    {provided.placeholder}
-                </Container>
+                        {provided.placeholder}
+                    </Container>
                 }
             </Droppable>
         </React.Fragment>

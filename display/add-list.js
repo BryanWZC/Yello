@@ -18,36 +18,28 @@ const Title = styled.h3`
     align-text: center;
 `;
 
-const AddList = () => {
-    const [placeholderDisplay, setDisplay] = useState(true);
-    const [text, setText] = useState('');
-
-    function handleClick(){
-        if(!text) return;
-        setDisplay(false);
-    }
-
+const AddList = (props) => {
     const placeholder = <PlaceholderWrapper>
                             <Placeholder 
                                 type='text' 
                                 id='card-placeholder' 
                                 name='card-placeholder'
                                 placeholder='+ Add another list'
-                                onChange={(e) => setText(e.target.value)}></Placeholder>
+                                onChange={props.handleChange}></Placeholder>
                             <Submit 
                                 type='submit'
                                 id='submit'
                                 name='submit'
                                 value='Add list'
-                                onClick={handleClick}
+                                onClick={props.handleClick}
                                 ></Submit>
                         </PlaceholderWrapper>;
 
-    const title = <Title>{text}</Title>;
+    const title = <Title>{props.text}</Title>;
 
     return(
         <React.Fragment>
-            {placeholderDisplay ? placeholder : title}
+            {props.display ? placeholder : title}
         </React.Fragment>
     );
 }
