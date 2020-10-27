@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./server/server.js",
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "dev": "webpack-dev-server --hot"
   },
   "keywords": [
     "fullstack",
@@ -15,11 +16,16 @@
   "author": "Bryan Wong",
   "license": "ISC",
   "dependencies": {
+    "@atlaskit/css-reset": "^6.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.11",
     "morgan": "^1.10.0",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
+    "styled-components": "^5.2.0",
     "webpack-node-externals": "^2.5.2"
   },
   "devDependencies": {
@@ -28,6 +34,7 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
+    "babel-plugin-styled-components": "^1.11.1",
     "css-loader": "^4.3.0",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
