@@ -18,13 +18,17 @@ const Title = styled.h3`
     align-text: center;
 `;
 
-const AddList = (props) => {
+/**
+ * Adds a title for each card. Will not add title if no input is given when submit button is pressed.
+ */
+const AddTitle = (props) => {
     const placeholder = <PlaceholderWrapper>
                             <Placeholder 
                                 type='text' 
                                 id='card-placeholder' 
                                 name='card-placeholder'
                                 placeholder='+ Add another list'
+                                autoComplete='off'
                                 onChange={props.handleChange}></Placeholder>
                             <Submit 
                                 type='submit'
@@ -44,4 +48,4 @@ const AddList = (props) => {
     );
 }
 
-export default AddList;
+export default AddTitle;

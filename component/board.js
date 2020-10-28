@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { DragDropContext } from 'react-beautiful-dnd';
 import Card from './card';
 
-function Index(){
+function Board(){
     return(
         <DragDropContext>
             <Card />
@@ -11,4 +11,4 @@ function Index(){
     );
 }
 
-ReactDOM.render(<Index />, document.getElementById('root'));
+ReactDOM.render(<Board />, document.getElementById('root'));
