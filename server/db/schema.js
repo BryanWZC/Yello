@@ -29,9 +29,19 @@ module.exports= {
             required: true,
             unique: true,
         },
-        board: {
-            type: String,
-            required: true,
+        cardOrder: {
+            type: [String],
+            default: [],
         },
-    }, {timestamps: true})
+    }, {timestamps: true}),
+    cardSchema: new mongoose.Schema({
+        title: String,
+        listIds: {
+            type: [String],
+            default: [],
+        },
+    }, {timestamps: true}),
+    listSchema: new mongoose.Schema({
+        content: String,
+    }, {timestamps: true}),
 };

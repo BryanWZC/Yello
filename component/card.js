@@ -1,43 +1,42 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import { Droppable } from 'react-beautiful-dnd';
-import AddTitle from './add-title';
+import Title from './card-title';
+import Items from './card-items';
 
 const Container = styled.div`
     display: flex;
     max-width: 200px;
 `;
 
-const Card = () => {
-    const [placeholderDisplay, setDisplay] = useState(true);
-    const [text, setText] = useState('');
-
-    // callbacks for AddList
-    const handleAddListClick = () => {
-        if(text){
-            setDisplay(false);
-            axios.post('/card-title', {
-                boardId: '5f98ce7c1b3fd7292815e527', // TODO: have a get request that grabs boardid from server.
-                cardTitle: text,
-            });
-        }
-    }
-    const setTitleText = (e) => setText(e.target.value)
+const Card = (props) => {
+    const { 
+        handleAddCardClick,
+        setTitleText,
+        titlePlaceholder,
+        cardTitle,
+        listTitle,
+        } = props;
 
     return(
         <React.Fragment>
-            <AddTitle 
-                handleClick={handleAddListClick} 
+            <Title 
+                handleClick={handleAddCardClick} 
                 handleChange={setTitleText} 
-                display={placeholderDisplay}
-                text={text}/>
+                display={titlePlaceholder}
+                cardTitle={cardTitle}/>
             <Droppable droppableId='test'>
                 {provided => 
                     <Container
                         {...provided.droppableProps}
                         ref={provided.innerRef}
                     >
+                        <Items 
+                            titlePlaceholder={!titlePlaceholder} // true if display for title placeholder is false
+                            listTitle={listTitle}
+                            setListTitleText={setListTitleText}
+                            handleAddListClick={handleAddListClick}
+                            />
                         {provided.placeholder}
                     </Container>
                 }

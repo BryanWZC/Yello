@@ -14,38 +14,46 @@ const Submit = styled.input`
     height: 100%;
 `;
 
-const Title = styled.h3`
+const CardTitle = styled.h3`
     align-text: center;
 `;
 
 /**
  * Adds a title for each card. Will not add title if no input is given when submit button is pressed.
  */
-const AddTitle = (props) => {
+const Title = (props) => {
+    const {
+        handleChange,
+        handleClick,
+        cardTitle,
+        display
+        } = props;
+
     const placeholder = <PlaceholderWrapper>
                             <Placeholder 
                                 type='text' 
                                 id='card-placeholder' 
                                 name='card-placeholder'
-                                placeholder='+ Add another list'
+                                placeholder='+ Add a card'
                                 autoComplete='off'
-                                onChange={props.handleChange}></Placeholder>
+                                onChange={handleChange}
+                            ></Placeholder>
                             <Submit 
                                 type='submit'
                                 id='submit'
                                 name='submit'
                                 value='Add list'
-                                onClick={props.handleClick}
+                                onClick={handleClick}
                                 ></Submit>
                         </PlaceholderWrapper>;
 
-    const title = <Title>{props.text}</Title>;
+    const title = <CardTitle>{cardTitle}</CardTitle>;
 
     return(
         <React.Fragment>
-            {props.display ? placeholder : title}
+            {display ? placeholder : title}
         </React.Fragment>
     );
 }
 
-export default AddTitle;
+export default Title;
