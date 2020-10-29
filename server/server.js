@@ -26,9 +26,28 @@ app.get('/get-board', async (req, res) => {
 });
 
 /**
+ * Get card data from db given cardId and returns it
+ */
+app.get('/get-card', async(req, res) => {
+    const { cardId } = req.query;
+    const card = await Card.findById(cardId).lean().exec();
+    res.json(card);
+});
+
+/**
+ * Get list data from db given listId and returns it
+ */
+app.get('/get-list', async(req, res) => {
+    const { listId } = req.query;
+    const list = await List.findById(listId).lean().exec();
+    res.json(list);
+});
+
+// TODO: FIGURE OUT WHY THIS DOES NOT UPDATE DB
+/**
  * Adds a card element to database when submitted.
  */
-app.post('/card-title', async (req, res) => {
+app.post('/post-card-title', async (req, res) => {
     const { boardId, cardTitle } = req.body;
     await addNewCard({ boardId, cardTitle });
     res.end();
@@ -37,9 +56,9 @@ app.post('/card-title', async (req, res) => {
 /**
  * Adds an item element to database when submitted.
  */
-app.post('/card-list', async (req, res) => {
-    const { boardId, listTitle } = req.body;
-    await addNewItem({ boardId, listTitle });
+app.post('/post-list-item', async (req, res) => {
+    const { cardId, listTitle } = req.body;
+    await addNewListItem({ cardId, listTitle });
     res.end();
 });
 
@@ -62,18 +81,17 @@ async function addNewCard({ boardId, cardTitle }) {
     const newCard = await Card.create(queryTitle);
     const cardId = newCard._id;
 
-    await Board.findByIdAndUpdate(boardId, { $push: { cardOrder: cardId}}).exec();
+    await Board.findByIdAndUpdate(boardId, { $push: { cardIds: cardId}}).exec();
 }
 
-// TODO finish function along with 2 new data collections in mongodb: Cards and list
-async function addNewItem({ cardId, listTitle }) {
+/**
+ * Add a new list item to a card. Updates listId array in card and adds new entry for list in db.
+ * @param {Object} { cardId, listTitle } - Object that contains cardId and listTitle 
+ * @return {Null}
+ */
+async function addNewListItem({ cardId, listTitle }) {
     const queryTitle = { title: listTitle };
-    const listExists = await List.findOne(queryTitle).lean().exec();
-
-    if(!listExists) return;
-
     const newList = await List.create(queryTitle);
-    const listId = newList._id;
 
-    await Card.findByIdAndUpdate
+    await Card.findByIdAndUpdate(cardId, { $push: { listIds: listTitle }}).exec();
 }

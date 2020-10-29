@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const PlaceholderWrapper = styled.div`
@@ -26,7 +26,8 @@ const Title = (props) => {
         handleChange,
         handleClick,
         cardTitle,
-        display
+        display,
+        cardObjLength
         } = props;
 
     const placeholder = <PlaceholderWrapper>
@@ -34,7 +35,7 @@ const Title = (props) => {
                                 type='text' 
                                 id='card-placeholder' 
                                 name='card-placeholder'
-                                placeholder='+ Add a card'
+                                placeholder={ typeof(cardObjLength)==='number' && cardObjLength ? '+ Add another card' : '+ Add a card'}
                                 autoComplete='off'
                                 onChange={handleChange}
                             ></Placeholder>

@@ -24,12 +24,12 @@ module.exports= {
         }
     }),
     boardSchema: new mongoose.Schema({
-        boardTitle: {
+        title: {
             type: String,
             required: true,
             unique: true,
         },
-        cardOrder: {
+        cardIds: {
             type: [String],
             default: [],
         },
@@ -42,6 +42,10 @@ module.exports= {
         },
     }, {timestamps: true}),
     listSchema: new mongoose.Schema({
-        content: String,
+        title: String,
+        content: {
+            type: String,
+            default: '',
+        },
     }, {timestamps: true}),
 };

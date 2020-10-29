@@ -8,5 +8,5 @@ module.exports = {
     User: mongoose.model('User', userSchema),
     Board: mongoose.model('Board', boardSchema),
     Card: mongoose.model('Card', cardSchema),
-    List: mongoose.model('List', listSchema,
+    List: mongoose.model('List', listSchema),
 }
