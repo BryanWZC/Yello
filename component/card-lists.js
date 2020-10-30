@@ -2,89 +2,102 @@ import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 
-const NewContainer = styled.input`
-    height: 100%;
+/**
+ * Styled components for AddNewList
+ */
+const NewContainer = styled.div`
+    display: flex;
+    height: 20px;
+    margin-bottom: 8px;
 `;
 
 const NewInput = styled.input`
     height: 100%;
+    margin-right: 8px;
 `;
 
 const Submit = styled.input`
     height: 100%;
 `;
 
-const ExistingContainer = styled.div`
+/**
+ * Styled components for List
+ */
+const ListItemContainer = styled.div`
     display: flex;
-    max-width: 200px;
+    width: 100%;
+    height: 20px;
+    background: white;
+    margin-bottom: 8px;
 `;
 
 const ItemTitle = styled.h4`
-    align-text: center;
+    width: 100%;
+    overflow-wrap: break-word;
+    border: 1px solid #333333;
 `;
 
 const Lists = (props) => {
-    console.log('lists')
-    const {
-        handleAddListClick, listTitle,
-        setListTitleText, listObjArr,
-        cardId, handleInputListOnBlur
-    } = props;
+    const { listObjArr, cardId } = props;
 
-    const existingListItems = listObjArr.map(listItem => <List isNewListItem={false} listItem={listItem} cardId={cardId}/>);
-
-    const newListItem =<List 
-            newListItem={true}
-            handleAddListClick={handleAddListClick}
-            handleInputListOnBlur={handleInputListOnBlur}
-            setListTitleText={setListTitleText}
-            listTitle={listTitle}
-        />;
+    const existingListItems = listObjArr.map((listItem, index) => <List listItem={listItem} cardId={cardId} index={index} key={listItem._id}/>);
 
     return(
         <React.Fragment>
             { existingListItems }
-            { cardId !== 'newToAddCard' ? newListItem : null }
         </React.Fragment>
     );
 }
 
 const List = (props) => {
-    const {
-        isNewListItem, handleAddListClick,
-        setListTitleText, listItem,
-        cardId, handleInputListOnBlur
-    } = props;
-    
-    const newListItem = <NewContainer>
-                            <NewInput 
-                                type='text' 
-                                id='item-input' 
-                                name='item-input'
-                                placeholder='+ Add an item'
-                                autoComplete='off'
-                                onChange={setListTitleText}
-                                onBlur={handleInputListOnBlur}
-                            ></NewInput>
-                            <Submit 
-                                type='submit'
-                                id='submit'
-                                name='submit'
-                                value='Add list'
-                                onClick={handleAddListClick}
-                                data-cardId={cardId}
-                            ></Submit>
-                        </NewContainer>;
-
-    const existingListItem = <ExistingContainer data-cardId={cardId}>
-                                <ItemTitle>{listItem ? listItem.title : null}</ItemTitle>
-                            </ExistingContainer>;
+    const { listItem, cardId, index } = props;
 
     return(
-        <React.Fragment>
-            { isNewListItem ? newListItem : existingListItem }
-        </React.Fragment>
+        <Draggable draggableId={ listItem._id } index={ index }>
+            {(provided, snapshot) => 
+                <ListItemContainer 
+                    data-cardid={cardId}
+                    {...provided.dragHandleProps}
+                    {...provided.draggableProps}
+                    ref={ provided.innerRef }
+                >
+                    <ItemTitle>{ listItem.title }</ItemTitle>
+                </ListItemContainer>
+            }
+        </Draggable>
     );
 }
 
-export default Lists;
+const AddNewListItem = (props) => {
+    const {
+        handleAddListClick, setListTitleText, 
+        cardId, listTitle,
+        listLength
+    } = props;
+
+    return(
+        <NewContainer>
+            <NewInput 
+                type='text' 
+                name='item-input'
+                placeholder={listLength ? '+ Add another item' : '+ Add an item'}
+                autoComplete='off'
+                value={listTitle}
+                onChange={setListTitleText}
+                onKeyDown={(e) => e.key === 'Enter' ? handleAddListClick(e) : ''}
+                maxLength={60}
+                data-card={cardId}
+            />
+            <Submit 
+                type='submit'
+                id='submit'
+                name='submit'
+                value='+ Add item'
+                onClick={handleAddListClick}
+                data-card={cardId}
+            />
+        </NewContainer>
+    );
+}
+
+export { Lists, AddNewListItem };

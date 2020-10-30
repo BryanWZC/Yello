@@ -47,10 +47,10 @@ app.get('/get-list', async(req, res) => {
 /**
  * Adds a card element to database when submitted.
  */
-app.post('/post-card-title', async (req, res) => {
+app.post('/post-card', async (req, res) => {
     const { boardId, cardTitle } = req.body;
-    await addNewCard({ boardId, cardTitle });
-    res.end();
+    const newCard = await addNewCard({ boardId, cardTitle });
+    res.json(newCard);
 });
 
 /**
@@ -58,8 +58,8 @@ app.post('/post-card-title', async (req, res) => {
  */
 app.post('/post-list-item', async (req, res) => {
     const { cardId, listTitle } = req.body;
-    await addNewListItem({ cardId, listTitle });
-    res.end();
+    const newListItem = await addNewListItem({ cardId, listTitle });
+    res.json(newListItem);
 });
 
 app.listen(port, async () => {
@@ -76,12 +76,13 @@ async function addNewCard({ boardId, cardTitle }) {
     const queryTitle = { title: cardTitle };
     const cardExists = await Card.findOne(queryTitle).lean().exec();
     
-    if(!cardExists) return;
+    if(cardExists) return;
     
     const newCard = await Card.create(queryTitle);
-    const cardId = newCard._id;
+    const { _id, title, listIds } = newCard;
 
-    await Board.findByIdAndUpdate(boardId, { $push: { cardIds: cardId}}).exec();
+    await Board.findByIdAndUpdate(boardId, { $push: { cardIds: _id}}, { useFindAndModify: false }).exec();
+    return { _id, title, listIds };
 }
 
 /**
@@ -90,8 +91,9 @@ async function addNewCard({ boardId, cardTitle }) {
  * @return {Null}
  */
 async function addNewListItem({ cardId, listTitle }) {
-    const queryTitle = { title: listTitle };
-    const newList = await List.create(queryTitle);
+    const newList = await List.create({ title: listTitle });
+    const { _id, title, content } = newList;
 
-    await Card.findByIdAndUpdate(cardId, { $push: { listIds: listTitle }}).exec();
+    await Card.findByIdAndUpdate(cardId, { $push: { listIds: _id }}, { useFindAndModify: false }).exec();
+    return { _id, title, content };
 }
