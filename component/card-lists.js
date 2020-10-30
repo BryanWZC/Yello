@@ -53,7 +53,7 @@ const List = (props) => {
     const { listItem, cardId, index } = props;
 
     return(
-        <Draggable draggableId={ listItem._id } index={ index }>
+        <Draggable draggableId={listItem._id} index={index}>
             {(provided, snapshot) => 
                 <ListItemContainer 
                     data-cardid={cardId}
