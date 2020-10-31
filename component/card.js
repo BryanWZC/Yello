@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Droppable , Draggable } from 'react-beautiful-dnd';
-import { Lists, AddNewListItem } from './card-lists';
+import { List, AddNewListItem } from './list';
 
 /**
  * Styles for cards
  */
 const CardsContainer = styled.div`
     display: flex;
+    align-items: flex-start;
+    align-self: flex-start;
 `;
 
 /**
@@ -16,17 +18,21 @@ const CardsContainer = styled.div`
 const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
-    min-width: 250px;
+    width: 250px;
+    min-height: 100px;
     border: 1px solid #333333;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 8px;
     margin: 8px;
-    background-color: white;
+    background-color: #f4f5f7;
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
 `;
 
 const CardTitle = styled.h3`
     align-text: center;
-    margin-bottom: 8px;
+    height: auto;
+    padding-left: 4px;
+    padding-bottom: 8px;
     overflow-wrap: break-word;
 `;
 
@@ -34,8 +40,7 @@ const ListContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    border: 1px solid #333333;
-    margin-bottom: 8px;
+    flex-grow: 1;
 `;
 
 /**
@@ -53,16 +58,23 @@ const Placeholder = styled.input`
 
 const Submit = styled.input`
     height: 100%;
+    border-radius: 5px;
+    border: 0;
+    padding: 4px;
+    background-color: #5aac44;
 `;
 
 const Cards = (props) => {
-    const { handleAddListClick, setListTitleText, cardObjArr } = props;
+    const { 
+        handleAddListClick, setListTitleText, 
+        cardObjArr, handleItemClick 
+    } = props;
 
     return(
         <Droppable
             droppableId='all-cards'
             direction='horizontal'
-            type='column'
+            type='card'
         >
             {(provided, index) => 
                 <CardsContainer
@@ -74,6 +86,7 @@ const Cards = (props) => {
                             cardObj={cardObj}
                             handleAddListClick={handleAddListClick}
                             setListTitleText={setListTitleText}
+                            handleItemClick={handleItemClick}
                             key={cardObj._id}
                             index={index}
                         />)}
@@ -88,7 +101,7 @@ const Card = (props) => {
     const { 
         handleAddListClick, setListTitleText, 
         cardObj, listTitle,
-        index
+        index, handleItemClick
     } = props;
     const id = cardObj._id;
     const listObjArr = cardObj.listIds;
@@ -106,7 +119,7 @@ const Card = (props) => {
                     <Droppable droppableId={id} type='list'>
                     {(provided, snapshot) => 
                         <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
-                                <Lists listObjArr={ listObjArr } cardId={id}/>
+                                <List listObjArr={ listObjArr } cardId={id} handleItemClick={handleItemClick}/>
                                 {provided.placeholder}
                             </ListContainer>
                         }

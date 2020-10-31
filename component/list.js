@@ -3,44 +3,62 @@ import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 
 /**
- * Styled components for AddNewList
- */
-const NewContainer = styled.div`
-    display: flex;
-    height: 20px;
-    margin-bottom: 8px;
-`;
-
-const NewInput = styled.input`
-    height: 100%;
-    margin-right: 8px;
-`;
-
-const Submit = styled.input`
-    height: 100%;
-`;
-
-/**
  * Styled components for List
  */
 const ListItemContainer = styled.div`
     display: flex;
     width: 100%;
-    height: 20px;
-    background: white;
+    height: auto;
+    background: #ffffff;
     margin-bottom: 8px;
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
 `;
 
 const ItemTitle = styled.h4`
     width: 100%;
-    overflow-wrap: break-word;
     border: 1px solid #333333;
+    overflow-wrap: break-word;
+    padding: 4px;
+    border-radius: 5px;
+    height: 100%;
 `;
 
-const Lists = (props) => {
-    const { listObjArr, cardId } = props;
+/**
+ * Styled components for AddNewList
+ */
+const NewContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+`;
 
-    const existingListItems = listObjArr.map((listItem, index) => <List listItem={listItem} cardId={cardId} index={index} key={listItem._id}/>);
+const NewInput = styled.input`
+    height: 25px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 8px;
+`;
+
+const Submit = styled.input`
+    height: 25px;
+    border-radius: 5px;
+    border: 0;
+    padding: 4px;
+    background-color: #5aac44;
+`;
+
+const List = (props) => {
+    const { listObjArr, cardId, handleItemClick } = props;
+
+    const existingListItems = listObjArr.map((listItem, index) =>( 
+        <Item 
+            handleItemClick={handleItemClick}
+            listItem={listItem} 
+            cardId={cardId} 
+            index={index} 
+            key={listItem._id}
+            />));
 
     return(
         <React.Fragment>
@@ -49,8 +67,8 @@ const Lists = (props) => {
     );
 }
 
-const List = (props) => {
-    const { listItem, cardId, index } = props;
+const Item = (props) => {
+    const { listItem, cardId, index, handleItemClick } = props;
 
     return(
         <Draggable draggableId={listItem._id} index={index}>
@@ -60,8 +78,9 @@ const List = (props) => {
                     {...provided.dragHandleProps}
                     {...provided.draggableProps}
                     ref={ provided.innerRef }
+                    onClick={handleItemClick}
                 >
-                    <ItemTitle>{ listItem.title }</ItemTitle>
+                    <ItemTitle data-itemid={listItem._id}>{ listItem.title }</ItemTitle>
                 </ListItemContainer>
             }
         </Draggable>
@@ -100,4 +119,4 @@ const AddNewListItem = (props) => {
     );
 }
 
-export { Lists, AddNewListItem };
+export { List, AddNewListItem };

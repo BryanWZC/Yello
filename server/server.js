@@ -35,15 +35,24 @@ app.get('/get-card', async(req, res) => {
 });
 
 /**
- * Get list data from db given listId and returns it
+ * Get list id and title only from db given listId and return it
  */
-app.get('/get-list', async(req, res) => {
+app.get('/get-item-title-only', async(req, res) => {
+    const { listId } = req.query;
+    const list = await List.findById(listId).lean().exec();
+    const { _id, title } = list;
+    res.json({ _id, title });
+});
+
+/**
+ * Get list data from db using given listId and return it
+ */
+app.get('/get-item', async (req, res) => {
     const { listId } = req.query;
     const list = await List.findById(listId).lean().exec();
     res.json(list);
-});
+})
 
-// TODO: FIGURE OUT WHY THIS DOES NOT UPDATE DB
 /**
  * Adds a card element to database when submitted.
  */
@@ -62,6 +71,33 @@ app.post('/post-list-item', async (req, res) => {
     res.json(newListItem);
 });
 
+/**
+ * Updates card order within db after a drag occurs
+ */
+app.post('/update-card-order', async (req, res) => {
+    const { boardId, newCardIds } = req.body;
+    await updateCardOrder({ boardId, newCardIds });
+    res.end();
+});
+
+/**
+ * Updates list order from drag and drop
+ */
+app.post('/update-list-order', async (req, res) => {
+    const { startCard, endCard } = req.body;
+    await updateListOrder({ startCard, endCard });
+    res.end();
+})
+
+/**
+ * Updates list item content on db
+ */
+app.post('/update-item-content', async (req, res) => {
+    const { _id, content } = req.body;
+    await updateItemContent({ _id, content });
+    res.end();
+})
+
 app.listen(port, async () => {
     await connect();
     console.log('Server is running. Listening on port 3000.')
@@ -70,7 +106,7 @@ app.listen(port, async () => {
 /**
  * Adds a new card object within the board object extracted from the database
  * @param  {Object} { boardId, cardTitle } - object containing board id and cardTitle
- * @return {Null}
+ * @return {null}
  */
 async function addNewCard({ boardId, cardTitle }) {
     const queryTitle = { title: cardTitle };
@@ -88,7 +124,7 @@ async function addNewCard({ boardId, cardTitle }) {
 /**
  * Add a new list item to a card. Updates listId array in card and adds new entry for list in db.
  * @param {Object} { cardId, listTitle } - Object that contains cardId and listTitle 
- * @return {Null}
+ * @return {null}
  */
 async function addNewListItem({ cardId, listTitle }) {
     const newList = await List.create({ title: listTitle });
@@ -96,4 +132,31 @@ async function addNewListItem({ cardId, listTitle }) {
 
     await Card.findByIdAndUpdate(cardId, { $push: { listIds: _id }}, { useFindAndModify: false }).exec();
     return { _id, title, content };
+}
+
+/**
+ * Updates the card order within a Board document after a card has been dragged to displace another card's location
+ * @param  {Object} { boardId, source, destination } - parameters for getting board and updating cardId order
+ * @return {null} 
+ */
+async function updateCardOrder({ boardId, newCardIds }) {
+    await Board.findByIdAndUpdate(boardId, { cardIds: newCardIds }, { useFindAndModify: false }).exec();
+}   
+
+/**
+ * Update start and end card positions for dragging and dropping functionality
+ * @param {Object} { startCard, endCard } - parameters for start and end cards with data within
+ */
+async function updateListOrder({ startCard, endCard }) {
+    await Card.findByIdAndUpdate(startCard._id, { listIds: startCard.listIds }, { useFindAndModify: false }).exec();
+    if(startCard._id === endCard._id) return;
+    await Card.findByIdAndUpdate(endCard._id, { listIds: endCard.listIds }, { useFindAndModify: false }).exec();
+}
+
+/**
+ * Updates list item in db given new content
+ * @param {Object} { _id, content } - object containing list item parameters to update 
+ */
+async function updateItemContent({ _id, content }) {
+    await List.findByIdAndUpdate(_id, { content }, { useFindAndModify: false });
 }
