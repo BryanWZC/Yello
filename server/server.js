@@ -87,7 +87,7 @@ app.post('/update-list-order', async (req, res) => {
     const { startCard, endCard } = req.body;
     await updateListOrder({ startCard, endCard });
     res.end();
-})
+});
 
 /**
  * Updates list item content on db
@@ -96,7 +96,16 @@ app.post('/update-item-content', async (req, res) => {
     const { _id, content } = req.body;
     await updateItemContent({ _id, content });
     res.end();
-})
+});
+
+/**
+ * Deletes an item from item doc and card itemIds list within its doc
+ */
+app.post('/delete-item', async (req, res) => {
+    const { cardId, itemId } = req.body;
+    await deleteItem({ cardId, itemId });
+    res.end();
+});
 
 app.listen(port, async () => {
     await connect();
@@ -159,4 +168,13 @@ async function updateListOrder({ startCard, endCard }) {
  */
 async function updateItemContent({ _id, content }) {
     await List.findByIdAndUpdate(_id, { content }, { useFindAndModify: false });
+}
+
+/**
+ * Delete an item from db
+ * @param {Object} { cardId, itemId } - cardId with itemId of to be deleted item
+ */
+async function deleteItem({ cardId, itemId }){
+    await List.findByIdAndDelete(itemId, { useFindAndModify: false });
+    await Card.findByIdAndUpdate(cardId, { $pull: { listIds: itemId } }, { useFindAndModify: false });
 }

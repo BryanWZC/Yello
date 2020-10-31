@@ -20,7 +20,7 @@ const Board = () => {
     const [cardTitle, setCardTitle] = useState('');
     const [listTitle, setListTitle] = useState('');
     const [renderAddCard, setRenderAddCard] = useState(false);
-    const [expandAdd, setExpandAdd] = useState(''); // TODO SET THE STATES FOR THESE SUCH THAT WHEN YOU CLICK ON AN INPUT OR TEXTAREA, THE ADD BUTTON POPS UP FROM BELOW AND STYLES CHANGE
+    const [inputExpand, setInputExpand] = useState(''); // TODO SET THE STATES FOR THESE SUCH THAT WHEN YOU CLICK ON AN INPUT OR TEXTAREA, THE ADD BUTTON POPS UP FROM BELOW AND STYLES CHANGE
     const [itemData, setItemData] = useState(null);
 
     useEffect(() =>{ updateBoardCardData() });
@@ -30,7 +30,7 @@ const Board = () => {
      */
     const updateBoardCardData = async () => {
         if(!boardData) {
-            const boardId = '5f9cbda049164268d40c38bd';
+            const boardId = '5f9d5c2e09192860108dc639';
             const board = (await axios('/get-board?boardId=' + boardId)).data;
             const cardIds = await Promise.all(board.cardIds.map(async (cardId) => {
                 const card = (await axios('/get-card?cardId=' + cardId)).data;
@@ -73,7 +73,7 @@ const Board = () => {
      */
     async function handleAddListClick(e) { 
         if(listTitle && boardData) {
-            const cardId = e.target.getAttribute('data-card');
+            const cardId = e.target.getAttribute('id');
             const newList = (await axios.post('/post-list-item', { cardId, listTitle: listTitle.trim() })).data;
             
             const newCardIds = boardData.cardIds.map(card => 
@@ -139,9 +139,10 @@ const Board = () => {
      * @param {Object} e - event object
      */
     async function handleItemClick(e) {
-        const id = e.target.getAttribute('data-itemid') || e.target.getAttribute('data-rbd-draggable-id');
+        const id = e.target.getAttribute('data-itemid');
+        const cardId = e.target.getAttribute('data-cardid')
         const item = (await axios.get('/get-item?listId=' + id)).data;
-        setItemData(item);
+        setItemData({...item, cardId});
     }
 
     /**
@@ -149,17 +150,53 @@ const Board = () => {
      * @param {Object} e - event object 
      */
     function overlayOnClick(e) { 
-        return (e.target.getAttribute('data-return') ? setItemData(null) : null);
+        if(!e.target.getAttribute('id')) setInputExpand('');
+        if(e.target.getAttribute('data-return')) setItemData(null);
     }
 
     /**
-     * Set item data on change
+     * Set item data on change and resets input expansion
      * @param {Object} e - event object 
      */
     async function handleItemData(e){ 
-        await axios.post('/update-item-content', { ...itemData, content: e.target.innerText }); 
+        const content = e.target.innerText;
+        if(!e.target.getAttribute('id')) setInputExpand('');
+        if(content.trim() === '') e.target.innerHTML = "<pre id='item-content-input'></pre>";
+
+        if(content.trim() !== itemData.content){
+            await axios.post('/update-item-content', { ...itemData, content }); 
+            setItemData({ ...itemData, content });
+        }
     }
 
+    /**
+     * Handles item deletes from the db and state
+     */
+    async function handleItemDelete(){
+        const cardId = itemData.cardId;
+        const itemId = itemData._id;
+        
+        const newCardIds = boardData.cardIds;
+        const cardIndex = newCardIds.reduce((acc, card, index) => card._id === cardId ? index : acc, 0);
+        const itemIndex = newCardIds[cardIndex].listIds.reduce((acc, item, index) => item._id === itemId ? index : acc, 0);
+
+        newCardIds[cardIndex].listIds.splice(itemIndex, 1);
+
+        setBoardData({ ...boardData, cardIds: newCardIds });
+        setItemData(null);
+        await axios.post('/delete-item', { cardId, itemId });
+    }
+
+    /**
+     * Switch to expand input box and change styles for each one when clicked
+     * @param {Object} e - event object 
+     */
+    function handleInputExpand(e){ setInputExpand(e.target.getAttribute('id')) };
+
+    /**
+     * Switch to expand textarea for adding item content specifically and change styles 
+     */
+    function handleTextareaExpand(){ setInputExpand('item-content-input') };
 
     return(
         <React.Suspense>
@@ -187,8 +224,12 @@ const Board = () => {
                 {itemData ?
                     <ListItemExpand 
                         itemData={itemData} 
+                        cardArray={boardData.cardIds}
                         handleItemData={handleItemData}
                         overlayOnClick={overlayOnClick}
+                        handleTextareaExpand={handleTextareaExpand}
+                        inputExpand={inputExpand}
+                        handleItemDelete={handleItemDelete}
                     /> :
                     null
                 }

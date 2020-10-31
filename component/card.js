@@ -46,14 +46,15 @@ const ListContainer = styled.div`
 /**
  * Styles for AddNewCard
  */
-const PlaceholderWrapper = styled.div`
+const AddCardContainer = styled.div`
     display: flex;
     width: 100%;
     height: 20px;
 `;
 
-const Placeholder = styled.input`
+const Input = styled.input`
     height: 100%;
+    padding-left: 4px;
 `;
 
 const Submit = styled.input`
@@ -62,6 +63,7 @@ const Submit = styled.input`
     border: 0;
     padding: 4px;
     background-color: #5aac44;
+    cursor: pointer;
 `;
 
 const Cards = (props) => {
@@ -76,7 +78,7 @@ const Cards = (props) => {
             direction='horizontal'
             type='card'
         >
-            {(provided, index) => 
+            {(provided, snapshot) => 
                 <CardsContainer
                     {...provided.droppableProps}
                     ref={provided.innerRef}
@@ -141,10 +143,10 @@ const AddNewCard = (props) => {
     const { handleAddCardClick, setTitleText, length , cardTitle} = props;
 
     return(
-        <PlaceholderWrapper>
-            <Placeholder 
+        <AddCardContainer>
+            <Input 
                 type='text' 
-                id='card-placeholder' 
+                id='card-input' 
                 name='card-placeholder'
                 placeholder={ length > 0 ? '+ Add another card' : '+ Add a card'}
                 autoComplete='off'
@@ -155,12 +157,11 @@ const AddNewCard = (props) => {
             />
             <Submit 
                 type='submit'
-                id='submit'
                 name='submit'
                 value='Add Card'
                 onClick={handleAddCardClick}
                 />
-        </PlaceholderWrapper>
+        </AddCardContainer>
     );
 }
 

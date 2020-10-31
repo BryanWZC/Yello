@@ -38,6 +38,7 @@ const NewInput = styled.input`
     width: 100%;
     border-radius: 5px;
     margin-bottom: 8px;
+    padding-left: 4px;
 `;
 
 const Submit = styled.input`
@@ -46,6 +47,7 @@ const Submit = styled.input`
     border: 0;
     padding: 4px;
     background-color: #5aac44;
+    cursor: pointer;
 `;
 
 const List = (props) => {
@@ -74,13 +76,18 @@ const Item = (props) => {
         <Draggable draggableId={listItem._id} index={index}>
             {(provided, snapshot) => 
                 <ListItemContainer 
-                    data-cardid={cardId}
                     {...provided.dragHandleProps}
                     {...provided.draggableProps}
                     ref={ provided.innerRef }
                     onClick={handleItemClick}
                 >
-                    <ItemTitle data-itemid={listItem._id}>{ listItem.title }</ItemTitle>
+                {/*data-cardid={cardId}*/}
+                    <ItemTitle 
+                        data-cardid={cardId}
+                        data-itemid={listItem._id}
+                    >
+                        { listItem.title }
+                    </ItemTitle>
                 </ListItemContainer>
             }
         </Draggable>
@@ -99,21 +106,20 @@ const AddNewListItem = (props) => {
             <NewInput 
                 type='text' 
                 name='item-input'
+                id={cardId}
                 placeholder={listLength ? '+ Add another item' : '+ Add an item'}
                 autoComplete='off'
                 value={listTitle}
                 onChange={setListTitleText}
                 onKeyDown={(e) => e.key === 'Enter' ? handleAddListClick(e) : ''}
                 maxLength={60}
-                data-card={cardId}
             />
             <Submit 
                 type='submit'
-                id='submit'
+                id={cardId}
                 name='submit'
                 value='+ Add item'
                 onClick={handleAddListClick}
-                data-card={cardId}
             />
         </NewContainer>
     );

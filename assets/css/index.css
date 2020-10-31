@@ -12,6 +12,6 @@
     color: #333333;
 }
 
-div[draggable]:hover, h3[draggable]:hover {
+div[data-rbd-drag-handle-context-id="0"] {
     cursor: pointer;
 }
