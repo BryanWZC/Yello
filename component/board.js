@@ -6,6 +6,12 @@ import axios from 'axios';
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 
+import { getBoard, getBoardAllCards } from './helpers/board-state-helpers';
+import { findIfTitleExists, addNewCard } from './helpers/board-add-card-helpers';
+import { addNewListItem, getNewCardIds, inputFieldReset } from './helpers/board-add-list-helpers';
+import { checkIdIndexSame, getUpdatedCardIds, updateDBCardOrder,
+    getUpdatedCardIdsForList, updateDBListOrder } from './helpers/board-drag-helpers';
+
 /**
  * Styles
  */
@@ -22,51 +28,50 @@ const Board = () => {
     const [renderAddCard, setRenderAddCard] = useState(false);
     const [inputExpand, setInputExpand] = useState(''); // TODO SET THE STATES FOR THESE SUCH THAT WHEN YOU CLICK ON AN INPUT OR TEXTAREA, THE ADD BUTTON POPS UP FROM BELOW AND STYLES CHANGE
     const [itemData, setItemData] = useState(null);
+    const [temp, setTemp] = useState(''); //used for any temp stores
 
     useEffect(() =>{ updateBoardCardData() });
-
     /**
      * get board data
      */
     const updateBoardCardData = async () => {
         if(!boardData) {
-            const boardId = '5f9d5c2e09192860108dc639';
-            const board = (await axios('/get-board?boardId=' + boardId)).data;
-            const cardIds = await Promise.all(board.cardIds.map(async (cardId) => {
-                const card = (await axios('/get-card?cardId=' + cardId)).data;
-                const listIds = await Promise.all(card.listIds.map(async (listId) => (await axios('/get-item-title-only?listId=' + listId)).data));
-                return { ...card, listIds };
-            }));
+            const boardId = '5f9dc19603c6526b6c3ac32b';
+            const board = await getBoard(boardId);
+            const cardIds = await getBoardAllCards(board);
             setBoardData({...board, cardIds});
             setRenderAddCard(true)
         }
     };
-
-    /**
+    
+    /** 
      * Handles change for card title text for new card 
      * @param {Object} e - event object 
      */
     function setTitleText(e) { setCardTitle(e.target.value) };
-
+    
     /**
      * Handles click for new card which adds a new card entry to board model in db and causes a board re-render along with state resets.
      */
-    async function handleAddCardClick(e) { 
+    async function handleAddCardClick() { 
         if(cardTitle && boardData) {
             const title = cardTitle.trim();
-            if(boardData.cardIds.filter(card => card.title === title).length) return;
-            const newCard = (await axios.post('/post-card', { boardId: boardData._id, cardTitle: title })).data;
-            setBoardData({ ...boardData, cardIds: [ ...boardData.cardIds, newCard ] })
+            
+            if(findIfTitleExists(boardData, title)) return;
+
+            const newCard = addNewCard(boardData._id, title);
+            const newCardIds = [ ...boardData.cardIds, newCard ];
+            setBoardData({ ...boardData, cardIds: newCardIds });
             setCardTitle('');
         }
     };
-
+    
     /**
      * Handles change for list item title for new list item
      * @param {Object} e - event object 
      */
     function setListTitleText(e) { setListTitle(e.target.value) };
-
+    
     /**
      * Handles click for new list Item to be added. Db will be updated and new list item rendered.
      * @param {Object} e - event object 
@@ -74,63 +79,30 @@ const Board = () => {
     async function handleAddListClick(e) { 
         if(listTitle && boardData) {
             const cardId = e.target.getAttribute('id');
-            const newList = (await axios.post('/post-list-item', { cardId, listTitle: listTitle.trim() })).data;
-            
-            const newCardIds = boardData.cardIds.map(card => 
-                card._id === cardId ?
-                    {...card, listIds: [...card.listIds, newList]} :
-                    card
-            )
+            const newList = addNewListItem(cardId, listTitle.trim());
+            const newCardIds = getNewCardIds(boardData, newList);
             setBoardData({ ...boardData, cardIds: newCardIds });
-
-            // reset text inputs
-            setListTitle("");
-            Array.from(document.querySelectorAll("input[type=text]"))
-                .forEach( input => (input.value = ''));
+            setListTitle('');
+            inputFieldReset();
         }
     };
-
+    
     /**
      * Handles onDragEnd event. Updates state and db.
      */
     async function onDragEnd(res){
         const { type, source, destination } = res;
         if(!destination) return;
-        if(
-            destination.droppableId === source.droppableId &&
-            destination.index === source.index
-        ) return;
-        
+        if(checkIdIndexSame(source, destination)) return;
         if(type === 'card'){
-            const newCardOrder = Array.from(boardData.cardIds);
-            const draggedCard = newCardOrder.splice(source.index, 1)[0];
-            newCardOrder.splice(destination.index, 0, draggedCard);
-
-            setBoardData({ ...boardData, cardIds: newCardOrder });
-
-            const newCardIds = newCardOrder.map(card => card._id);
-            await axios.post('/update-card-order', { boardId: boardData._id , newCardIds });
+            const cardIds = getUpdatedCardIds(boardData, source, destination);
+            setBoardData({ ...boardData, cardIds });
+            await updateDBCardOrder(boardData._id, cardIds);
         }
-
         if(type === 'list'){
-            const cards = Array.from(boardData.cardIds);
-            const cardIds = cards.map(card => card._id);
-
-            const startCardIndex = cardIds.indexOf(source.droppableId);
-            const endCardIndex = cardIds.indexOf(destination.droppableId);
-
-            const draggedItem = cards[startCardIndex].listIds.splice(source.index, 1)[0];
-            cards[endCardIndex].listIds.splice(destination.index, 0, draggedItem);
-            
-            setBoardData({...boardData, cardIds: cards});
-
-            const startCardListIds = cards[startCardIndex].listIds.map(item => item._id);
-            const endCardListIds = cards[endCardIndex].listIds.map(item => item._id);
-
-            await axios.post('/update-list-order', {
-                startCard: { _id: source.droppableId, listIds: startCardListIds },
-                endCard: { _id: destination.droppableId, listIds: endCardListIds },
-            });
+            const cardIds = getUpdatedCardIdsForList(boardData, source, destination);
+            setBoardData({...boardData, cardIds });
+            await updateDBListOrder(cardIds, source, destination);
         }
     }
 
@@ -149,24 +121,29 @@ const Board = () => {
      * Handles overlay on click to clear out and reveal Board component
      * @param {Object} e - event object 
      */
-    function overlayOnClick(e) { 
+    async function overlayOnClick(e) { 
         if(!e.target.getAttribute('id')) setInputExpand('');
-        if(e.target.getAttribute('data-return')) setItemData(null);
+        if(e.target.getAttribute('data-return')) setItemData(null), setTemp('');
     }
 
     /**
-     * Set item data on change and resets input expansion
+     * Set item data on change and resets input expansion. Same method used for textarea and submit button
      * @param {Object} e - event object 
      */
     async function handleItemData(e){ 
-        const content = e.target.innerText;
+        let target, content, innerHTML;
         if(!e.target.getAttribute('id')) setInputExpand('');
-        if(content.trim() === '') e.target.innerHTML = "<pre id='item-content-input'></pre>";
 
-        if(content.trim() !== itemData.content){
-            await axios.post('/update-item-content', { ...itemData, content }); 
-            setItemData({ ...itemData, content });
-        }
+        // Checks if textarea or submit button
+        if(e.target.getAttribute('role') === 'textarea') target = e.target;
+        else target = document.querySelector('div#item-content-input');
+
+        content = target.innerText;
+        innerHTML = target.innerHtml;
+        
+        if(content.trim() === '') innerHTML = "<pre id='item-content-input'></pre>";
+        if(temp !== content) await axios.post('/update-item-content', { ...itemData, content });
+        setTemp(content);
     }
 
     /**

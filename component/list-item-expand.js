@@ -8,7 +8,7 @@ const Overlay = styled.div`
     align-items: flex-start;
     justify-content: center;
     padding: 48px 0 80px;
-    width: 100%;
+    min-width: 100%;
     min-height: 100%;
     background-color: rgba(0,0,0,.64);
 `;
@@ -82,7 +82,8 @@ const ListItemExpand = (props) => {
         handleItemDelete
     } = props;
     const content = item.content;
-    const cardTitle = cardArray.reduce((acc, card) => card._id ? card.title : acc, '');
+    const arrIndex = cardArray.map(card => card._id).indexOf(item.cardId);
+    const cardTitle = cardArray[arrIndex].title;
     return(
         <Overlay
             data-return={true}
