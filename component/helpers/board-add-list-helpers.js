@@ -6,17 +6,18 @@ import axios from 'axios';
  * @param  {String} listTitle - title of list 
  * @return {Object}           - new list doc object  
  */
-async function addNewListItem({ cardId, listTitle }) {
-    return (await axios.post('/post-list-item', { cardId, listTitle })).data;
+async function addNewListItem(cardId, listTitle) {
+    return await (await axios.post('/post-list-item', { cardId, listTitle })).data;
 }
 
 /**
  * Creates new cardId array to update state for boardData
  * @param  {Object} boardData - boardData object for state management
  * @param  {Object} newList   - New list doc object to update boardData state  
+ * @param  {String} cardId    - card id  
  * @return {Array}            - New cardIds array to update boardData state with 
  */
-function getNewCardIds(boardData, newList) {
+function getNewCardIds(boardData, newList, cardId) {
     return boardData.cardIds.map(card => 
         card._id === cardId ?
             {...card, listIds: [...card.listIds, newList]} :

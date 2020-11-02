@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
+import { CardActions } from './card-actions';
 
 import { getBoard, getBoardAllCards } from './helpers/board-state-helpers';
 import { findIfTitleExists, addNewCard } from './helpers/board-add-card-helpers';
@@ -29,6 +30,7 @@ const Board = () => {
     const [inputExpand, setInputExpand] = useState(''); // TODO SET THE STATES FOR THESE SUCH THAT WHEN YOU CLICK ON AN INPUT OR TEXTAREA, THE ADD BUTTON POPS UP FROM BELOW AND STYLES CHANGE
     const [itemData, setItemData] = useState(null);
     const [temp, setTemp] = useState(''); //used for any temp stores
+    const [offsets, setOffsets] = useState(null);
 
     useEffect(() =>{ updateBoardCardData() });
     /**
@@ -36,7 +38,7 @@ const Board = () => {
      */
     const updateBoardCardData = async () => {
         if(!boardData) {
-            const boardId = '5f9dc19603c6526b6c3ac32b';
+            const boardId = '5f9fc3462df3c70d34dc28ca';
             const board = await getBoard(boardId);
             const cardIds = await getBoardAllCards(board);
             setBoardData({...board, cardIds});
@@ -59,13 +61,13 @@ const Board = () => {
             
             if(findIfTitleExists(boardData, title)) return;
 
-            const newCard = addNewCard(boardData._id, title);
+            const newCard = await addNewCard(boardData._id, title);
             const newCardIds = [ ...boardData.cardIds, newCard ];
             setBoardData({ ...boardData, cardIds: newCardIds });
             setCardTitle('');
         }
     };
-    
+
     /**
      * Handles change for list item title for new list item
      * @param {Object} e - event object 
@@ -79,8 +81,8 @@ const Board = () => {
     async function handleAddListClick(e) { 
         if(listTitle && boardData) {
             const cardId = e.target.getAttribute('id');
-            const newList = addNewListItem(cardId, listTitle.trim());
-            const newCardIds = getNewCardIds(boardData, newList);
+            const newList = await addNewListItem(cardId, listTitle);
+            const newCardIds = getNewCardIds(boardData, newList, cardId);
             setBoardData({ ...boardData, cardIds: newCardIds });
             setListTitle('');
             inputFieldReset();
@@ -100,22 +102,59 @@ const Board = () => {
             await updateDBCardOrder(boardData._id, cardIds);
         }
         if(type === 'list'){
-            const cardIds = getUpdatedCardIdsForList(boardData, source, destination);
+            const data = getUpdatedCardIdsForList(boardData, source, destination);
+            const { cardIds, startCardIndex, endCardIndex } = data;
             setBoardData({...boardData, cardIds });
-            await updateDBListOrder(cardIds, source, destination);
+            await updateDBListOrder(cardIds, {...source, startCardIndex}, {...destination, endCardIndex});
         }
+    };
+
+    /**
+     * On card ellipsis click, make the card action menu visible 
+     * @param {Object} e - event object
+     */
+    function setOffsetsCard(e) { 
+        if(offsets) return setOffsets(null), setTemp('');
+        if(e.target === e.currentTarget) {
+            setOffsets({left: e.target.offsetLeft, top: e.target.offsetTop + 40}); 
+            setTemp({
+                cardId: e.target.getAttribute('data-cardid'),
+                boardId: e.target.getAttribute('data-boardid'),
+            });
+        }
+    };
+
+    /**
+     * Reset offset state and hide the card action menu when click everywhere except the card action menu. PLaced globally on the global container.
+     */
+    function setOffsetsCardOnBlur(e) { 
+        if(offsets && e.target.getAttribute('id') !== 'card-action-menu') setOffsets(null), setTemp(''); 
+    };
+
+    /**
+     * Handles card delete upon button click on card action menu
+     */
+    async function handleCardDelete() {
+        const { boardId, cardId } = temp;
+        const newCardIds = boardData.cardIds.filter(card => card._id !== cardId);
+
+        setBoardData({...boardData, cardIds: newCardIds});
+        await axios.post('delete-card', { boardId, cardId });
+        setOffsets(null);
+        setTemp('');
     }
 
     /**
-     * Displays a card with list item details when clicked
+     * Displays a card with list item details and overlays the main page when clicked
      * @param {Object} e - event object
      */
     async function handleItemClick(e) {
         const id = e.target.getAttribute('data-itemid');
-        const cardId = e.target.getAttribute('data-cardid')
+        const cardId = e.target.getAttribute('data-cardid');
         const item = (await axios.get('/get-item?listId=' + id)).data;
         setItemData({...item, cardId});
-    }
+        setOffsets(null);
+    };
 
     /**
      * Handles overlay on click to clear out and reveal Board component
@@ -124,27 +163,26 @@ const Board = () => {
     async function overlayOnClick(e) { 
         if(!e.target.getAttribute('id')) setInputExpand('');
         if(e.target.getAttribute('data-return')) setItemData(null), setTemp('');
-    }
+    };
 
     /**
      * Set item data on change and resets input expansion. Same method used for textarea and submit button
      * @param {Object} e - event object 
      */
     async function handleItemData(e){ 
-        let target, content, innerHTML;
+        let target, content;
         if(!e.target.getAttribute('id')) setInputExpand('');
 
         // Checks if textarea or submit button
         if(e.target.getAttribute('role') === 'textarea') target = e.target;
         else target = document.querySelector('div#item-content-input');
 
-        content = target.innerText;
-        innerHTML = target.innerHtml;
+        content = target.innerText.trim();
         
-        if(content.trim() === '') innerHTML = "<pre id='item-content-input'></pre>";
+        if(content === '') target.innerHTML = "<pre id='item-content-input'></pre>";
         if(temp !== content) await axios.post('/update-item-content', { ...itemData, content });
         setTemp(content);
-    }
+    };
 
     /**
      * Handles item deletes from the db and state
@@ -162,7 +200,7 @@ const Board = () => {
         setBoardData({ ...boardData, cardIds: newCardIds });
         setItemData(null);
         await axios.post('/delete-item', { cardId, itemId });
-    }
+    };
 
     /**
      * Switch to expand input box and change styles for each one when clicked
@@ -177,7 +215,9 @@ const Board = () => {
 
     return(
         <React.Suspense>
-            <Container>
+            <Container
+                onClick={setOffsetsCardOnBlur}
+            >
                 <DragDropContext
                     onDragEnd={onDragEnd}
                 >
@@ -187,6 +227,9 @@ const Board = () => {
                         handleItemClick={handleItemClick}
                         cardObjArr={boardData ? boardData.cardIds : []} 
                         listTitle={listTitle}
+                        inputExpand={inputExpand}
+                        setOffsetsCard={setOffsetsCard}
+                        boardId={boardData ? boardData._id : null}
                     />
                 </DragDropContext>
                 {renderAddCard ? 
@@ -207,6 +250,14 @@ const Board = () => {
                         handleTextareaExpand={handleTextareaExpand}
                         inputExpand={inputExpand}
                         handleItemDelete={handleItemDelete}
+                    /> :
+                    null
+                }
+                {offsets ?
+                    <CardActions 
+                        offsets={offsets}
+                        handleCardDelete={handleCardDelete}
+                        setOffsetsCardOnBlur={setOffsetsCardOnBlur}
                     /> :
                     null
                 }

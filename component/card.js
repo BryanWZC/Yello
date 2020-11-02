@@ -18,9 +18,9 @@ const CardsContainer = styled.div`
 const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 250px;
+    width: 270px;
     min-height: 100px;
-    border: 1px solid #333333;
+    border: none;
     border-radius: 5px;
     padding: 8px;
     margin: 8px;
@@ -28,14 +28,55 @@ const CardContainer = styled.div`
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
 `;
 
+/**
+ * Styles for title section 
+ */
+const TitleContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    margin-bottom: 8px;
+    border: none;
+    cursor: pointer;
+`;
+
 const CardTitle = styled.h3`
     align-text: center;
     height: auto;
     padding-left: 4px;
-    padding-bottom: 8px;
     overflow-wrap: break-word;
+    cursor: pointer;
 `;
 
+const ActionButton = styled.button`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: inherit;
+    border: none;
+    cursor: pointer;
+    background: none;
+
+    &:focus {
+        outline: none;
+    }
+    &:hover {
+        background: #CED1DA;
+    }
+`;
+
+const ThreeDots = styled.img`
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+`;
+
+/**
+ * Styles for list container
+ */
 const ListContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -54,13 +95,14 @@ const AddCardContainer = styled.div`
 
 const Input = styled.input`
     height: 100%;
+    border: none;
     padding-left: 4px;
 `;
 
 const Submit = styled.input`
     height: 100%;
+    border: none;
     border-radius: 5px;
-    border: 0;
     padding: 4px;
     background-color: #5aac44;
     cursor: pointer;
@@ -69,7 +111,9 @@ const Submit = styled.input`
 const Cards = (props) => {
     const { 
         handleAddListClick, setListTitleText, 
-        cardObjArr, handleItemClick 
+        cardObjArr, handleItemClick,
+        inputExpand, setOffsetsCard,
+        boardId
     } = props;
 
     return(
@@ -91,6 +135,9 @@ const Cards = (props) => {
                             handleItemClick={handleItemClick}
                             key={cardObj._id}
                             index={index}
+                            inputExpand={inputExpand}
+                            setOffsetsCard={setOffsetsCard}
+                            boardId={boardId}
                         />)}
                     {provided.placeholder}
                 </CardsContainer>
@@ -103,7 +150,9 @@ const Card = (props) => {
     const { 
         handleAddListClick, setListTitleText, 
         cardObj, listTitle,
-        index, handleItemClick
+        index, handleItemClick,
+        inputExpand, setOffsetsCard,
+        boardId
     } = props;
     const id = cardObj._id;
     const listObjArr = cardObj.listIds;
@@ -115,9 +164,20 @@ const Card = (props) => {
                     {...provided.draggableProps}
                     ref={provided.innerRef}
                 >
-                    <CardTitle {...provided.dragHandleProps}>
-                        {cardObj.title}
-                    </CardTitle>
+                    <TitleContainer
+                        {...provided.dragHandleProps}
+                    >
+                        <CardTitle>
+                            {cardObj.title}
+                        </CardTitle>
+                        <ActionButton
+                            data-cardid={id}
+                            data-boardid={boardId}
+                            onClick={setOffsetsCard}
+                        >
+                            <ThreeDots src='./svg/ellipsis.svg'/>
+                        </ActionButton>
+                    </TitleContainer>
                     <Droppable droppableId={id} type='list'>
                     {(provided, snapshot) => 
                         <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
@@ -127,12 +187,13 @@ const Card = (props) => {
                         }
                         </Droppable>
                         <AddNewListItem 
-                        handleAddListClick={handleAddListClick}
-                        setListTitleText={setListTitleText}
-                        cardId={id}
-                        listTitle={listTitle}
-                        listLength={listObjArr.length}
-                    />
+                            handleAddListClick={handleAddListClick}
+                            setListTitleText={setListTitleText}
+                            cardId={id}
+                            listTitle={listTitle}
+                            listLength={listObjArr.length}
+                            inputExpand={inputExpand}
+                        />
                 </CardContainer>
             }
             </Draggable>

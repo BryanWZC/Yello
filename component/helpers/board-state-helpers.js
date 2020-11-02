@@ -33,7 +33,7 @@ async function getListTitle(listId) {
  * @return {Array}          - array of list doc objects
  */
 async function getCardAllList(cardObj) {
-    return Promise.all(card.listIds.map(async (listId) => getListTitle(listId)));
+    return Promise.all(cardObj.listIds.map(async (listId) => getListTitle(listId)));
 }
 
 /**

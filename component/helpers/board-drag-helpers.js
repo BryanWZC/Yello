@@ -42,7 +42,7 @@ async function updateDBCardOrder(boardId, newCardOrder) {
  * @param  {Object} boardData   - current board object 
  * @param  {Object} source      - contains start drag data
  * @param  {Object} destination - contains end drag data
- * @return {Array}              - updated cardId array
+ * @return {Object}             - updated data object with cardId array, start and end card indexes. start and end index to be used for db updates.
  */
 function getUpdatedCardIdsForList(boardData, source, destination) {
     const cardIds = Array.from(boardData.cardIds);
@@ -53,7 +53,7 @@ function getUpdatedCardIdsForList(boardData, source, destination) {
 
     const draggedItem = cardIds[startCardIndex].listIds.splice(source.index, 1)[0];
     cardIds[endCardIndex].listIds.splice(destination.index, 0, draggedItem);
-    return cardIds;
+    return { cardIds, startCardIndex, endCardIndex };
 }
 
 /**
@@ -63,8 +63,9 @@ function getUpdatedCardIdsForList(boardData, source, destination) {
  * @param  {Object} destination - contains end drag data
  */
 async function updateDBListOrder(cardIds, source, destination) {
-    const startCardListIds = cardIds[startCardIndex].listIds.map(item => item._id);
-    const endCardListIds = cardIds[endCardIndex].listIds.map(item => item._id);
+
+    const startCardListIds = cardIds[source.startCardIndex].listIds.map(item => item._id);
+    const endCardListIds = cardIds[destination.endCardIndex].listIds.map(item => item._id);
     
     await axios.post('/update-list-order', {
         startCard: { _id: source.droppableId, listIds: startCardListIds },

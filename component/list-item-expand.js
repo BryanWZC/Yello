@@ -17,7 +17,7 @@ const ItemContainer = styled.div`
     position: relative;
     width: 600px;
     min-height: 250px;
-    border: 1px solid red;
+    border: none;
     border-radius: 5px;
     padding: 16px;
     background-color: #f4f5f7;
@@ -47,7 +47,7 @@ const ContentContainer = styled.div`
     overflow-wrap: break-word;
 
     & > pre:empty::before {
-        content: "Add more details here...";
+        content: 'Add more details here...';
         color: gray;
     }
 `;
@@ -55,8 +55,8 @@ const ContentContainer = styled.div`
 const Submit = styled.input`
     margin-bottom: 16px;
     height: 25px;
+    border: none;
     border-radius: 5px;
-    border: 0;
     padding: 4px;
     background-color: #5aac44;
     cursor: pointer;
@@ -67,8 +67,8 @@ const Delete = styled.input`
     right: 16px;
     bottom: 16px;
     height: 25px;
+    border: none;
     border-radius: 5px;
-    border: 0;
     padding: 4px;
     background-color: red;
     cursor: pointer;
@@ -100,10 +100,7 @@ const ListItemExpand = (props) => {
                     onBlur={handleItemData}
                     data-expand={inputExpand === 'item-content-input' ? true : false }
                 >
-                    <pre 
-                        id='item-content-input'
-                        onClick={handleTextareaExpand}
-                    >
+                    <pre id='item-content-input' onClick={handleTextareaExpand}>
                         {content}
                     </pre>
                 </ContentContainer>

@@ -9,18 +9,18 @@ const ListItemContainer = styled.div`
     display: flex;
     width: 100%;
     height: auto;
-    background: #ffffff;
+    border-radius: 5px;
     margin-bottom: 8px;
     box-shadow: 0 1px 0 rgba(9,30,66,.25);
+    background: #ffffff;
 `;
 
 const ItemTitle = styled.h4`
     width: 100%;
-    border: 1px solid #333333;
     overflow-wrap: break-word;
     padding: 4px;
     border-radius: 5px;
-    height: 100%;
+    height: 32px;
 `;
 
 /**
@@ -34,15 +34,16 @@ const NewContainer = styled.div`
 `;
 
 const NewInput = styled.input`
-    height: 25px;
+    height: ${props => props['data-expand'] ? '66px' : '32px'};;
     width: 100%;
+    border: none;
     border-radius: 5px;
     margin-bottom: 8px;
     padding-left: 4px;
 `;
 
 const Submit = styled.input`
-    height: 25px;
+    height: 32px;
     border-radius: 5px;
     border: 0;
     padding: 4px;
@@ -98,7 +99,7 @@ const AddNewListItem = (props) => {
     const {
         handleAddListClick, setListTitleText, 
         cardId, listTitle,
-        listLength
+        listLength, inputExpand
     } = props;
 
     return(
@@ -113,6 +114,7 @@ const AddNewListItem = (props) => {
                 onChange={setListTitleText}
                 onKeyDown={(e) => e.key === 'Enter' ? handleAddListClick(e) : ''}
                 maxLength={60}
+                data-expand={inputExpand === cardId ? true : false }
             />
             <Submit 
                 type='submit'

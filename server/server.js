@@ -107,6 +107,15 @@ app.post('/delete-item', async (req, res) => {
     res.end();
 });
 
+/**
+ * Deletes a card from the card doc and board cardIds list within its doc
+ */
+app.post('/delete-card', async (req, res) => {
+    const { boardId, cardId } = req.body;
+    await deleteCard({ boardId, cardId });
+    res.end();
+})
+
 app.listen(port, async () => {
     await connect();
     console.log('Server is running. Listening on port 3000.')
@@ -171,10 +180,19 @@ async function updateItemContent({ _id, content }) {
 }
 
 /**
- * Delete an item from db
+ * Delete an item from db and updates card listIds array
  * @param {Object} { cardId, itemId } - cardId with itemId of to be deleted item
  */
 async function deleteItem({ cardId, itemId }){
     await List.findByIdAndDelete(itemId, { useFindAndModify: false });
     await Card.findByIdAndUpdate(cardId, { $pull: { listIds: itemId } }, { useFindAndModify: false });
+}
+
+/**
+ * Deletes a card from db and updates board cardIds array
+ * @param {Objetc} { boardId, cardId } - Object containing board and card id 
+ */
+async function deleteCard({ boardId, cardId }) {
+    await Card.findByIdAndDelete(cardId, { useFindAndModify: false });
+    await Board.findByIdAndUpdate(boardId, { $pull: { cardIds: cardId } },{ useFindAndModify: false });
 }
