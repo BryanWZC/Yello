@@ -45,6 +45,15 @@ app.get('/get-item-title-only', async(req, res) => {
 });
 
 /**
+ * Get list data from db given listId and returns it
+ */
+app.get('/get-item', async (req, res) => {
+    const { listId } = req.query;
+    const list = await List.findById(listId).lean().exec();
+    res.json(list);
+})
+
+/**
  * Get list data from db using given listId and return it
  */
 app.get('/get-item', async (req, res) => {

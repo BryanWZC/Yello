@@ -1,6 +1,8 @@
 # Folders
 node_modules
 test-dnd
+test-redux
+progess_tracker
 
 # Files
 .env

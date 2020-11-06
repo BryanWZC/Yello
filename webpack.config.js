@@ -5,7 +5,7 @@ const nodeExternals = require('webpack-node-externals');
 const frontConfig = {
     target: 'web',
     mode: 'development',
-    entry: './component/board.js',
+    entry: './src/components/board.js',
     module:{
         rules: [
             {

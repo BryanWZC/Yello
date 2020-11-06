@@ -3,6 +3,10 @@ import styled from 'styled-components';
 import { Droppable , Draggable } from 'react-beautiful-dnd';
 import { List, AddNewListItem } from './list';
 
+import { boardData } from '../reducers/boardReducers'
+import { useSelector, useStore, useDispatch } from 'react-redux';
+import { getBoardData } from '../reducers/boardReducers';
+
 /**
  * Styles for cards
  */
@@ -154,6 +158,7 @@ const Card = (props) => {
         inputExpand, setOffsetsCard,
         boardId
     } = props;
+
     const id = cardObj._id;
     const listObjArr = cardObj.listIds;
 

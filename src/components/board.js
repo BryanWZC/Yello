@@ -1,21 +1,34 @@
+// React modules
 import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
+
+// Redux modules 
+import { configureStore, unwrapResult } from '@reduxjs/toolkit'; 
+import rootReducer from '../reducers/reducers';
+import { getBoardData, setCardTitleText, handleAddCard } from '../reducers/boardReducers';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+
+// Other external modules
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import axios from 'axios';
+
+// Internal modules
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 import { CardActions } from './card-actions';
-
 import { getBoard, getBoardAllCards } from './helpers/board-state-helpers';
 import { findIfTitleExists, addNewCard } from './helpers/board-add-card-helpers';
-import { addNewListItem, getNewCardIds, inputFieldReset } from './helpers/board-add-list-helpers';
-import { checkIdIndexSame, getUpdatedCardIds, updateDBCardOrder,
-    getUpdatedCardIdsForList, updateDBListOrder } from './helpers/board-drag-helpers';
+import { 
+    addNewListItem, 
+    getNewCardIds, 
+    inputFieldReset } from './helpers/board-add-list-helpers';
+import { 
+    checkIdIndexSame, getUpdatedCardIds, 
+    updateDBCardOrder, getUpdatedCardIdsForList, 
+    updateDBListOrder } from './helpers/board-drag-helpers';
 
-/**
- * Styles
- */
+// Styles
 const Container = styled.div`
     display: flex;
     width: 100%;
@@ -32,10 +45,16 @@ const Board = () => {
     const [temp, setTemp] = useState(''); //used for any temp stores
     const [offsets, setOffsets] = useState(null);
 
-    useEffect(() =>{ updateBoardCardData() });
+    const dispatch = useDispatch();
+
+    useEffect(() =>{ 
+        updateBoardCardData();
+        dispatch(getBoardData('5f9fc3462df3c70d34dc28ca'));
+    }, [dispatch]);
     /**
      * get board data
      */
+
     const updateBoardCardData = async () => {
         if(!boardData) {
             const boardId = '5f9fc3462df3c70d34dc28ca';
@@ -44,13 +63,17 @@ const Board = () => {
             setBoardData({...board, cardIds});
             setRenderAddCard(true)
         }
+        
     };
-    
+
     /** 
      * Handles change for card title text for new card 
      * @param {Object} e - event object 
      */
-    function setTitleText(e) { setCardTitle(e.target.value) };
+    function setTitleText(e) { 
+        setCardTitle(e.target.value);
+        dispatch(setCardTitleText(e));
+    };
     
     /**
      * Handles click for new card which adds a new card entry to board model in db and causes a board re-render along with state resets.
@@ -266,4 +289,13 @@ const Board = () => {
     );
 }
 
-ReactDOM.render(<Board />, document.getElementById('root'));
+const store = configureStore({
+    reducer: rootReducer,
+});
+
+ReactDOM.render(
+    <Provider store={store}>
+        <Board />
+    </Provider>, 
+    document.getElementById('root')
+);
