@@ -1,6 +1,13 @@
+// External modules
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
+
+// internal modules
+import * as select from '../selectors/selectors';
+import { handleAddList, setListTitle } from '../slices/board-slice';
+import { handleItemClick } from '../slices/item-menu-slice';
 
 /**
  * Styled components for List
@@ -21,6 +28,7 @@ const ItemTitle = styled.h4`
     padding: 4px;
     border-radius: 5px;
     height: 32px;
+    pointer-events: none;
 `;
 
 /**
@@ -52,42 +60,38 @@ const Submit = styled.input`
 `;
 
 const List = (props) => {
-    const { listObjArr, cardId, handleItemClick } = props;
-
-    const existingListItems = listObjArr.map((listItem, index) =>( 
-        <Item 
-            handleItemClick={handleItemClick}
-            listItem={listItem} 
-            cardId={cardId} 
-            index={index} 
-            key={listItem._id}
-            />));
+    const { cardId } = props;
+    const index = useSelector(select.cardIds).map(card => card._id).indexOf(cardId);
+    const card = useSelector(select.cardIds)[index];
+    const listIds = card.listIds;
 
     return(
         <React.Fragment>
-            { existingListItems }
+            { listIds.map((item, index) =>
+                <Item item={item} cardId={cardId} index={index} key={item._id} />
+            )}
         </React.Fragment>
     );
 }
 
 const Item = (props) => {
-    const { listItem, cardId, index, handleItemClick } = props;
+    const dispatch = useDispatch();
+    const { item, cardId, index } = props;
+    const itemId = item._id;
 
     return(
-        <Draggable draggableId={listItem._id} index={index}>
+        <Draggable draggableId={itemId} index={index}>
             {(provided, snapshot) => 
                 <ListItemContainer 
                     {...provided.dragHandleProps}
                     {...provided.draggableProps}
                     ref={ provided.innerRef }
-                    onClick={handleItemClick}
+                    onClick={(e) => dispatch(handleItemClick(e))}
+                    data-cardid={cardId} 
+                    data-itemid={itemId}
                 >
-                {/*data-cardid={cardId}*/}
-                    <ItemTitle 
-                        data-cardid={cardId}
-                        data-itemid={listItem._id}
-                    >
-                        { listItem.title }
+                    <ItemTitle>
+                        {item.title}
                     </ItemTitle>
                 </ListItemContainer>
             }
@@ -96,32 +100,39 @@ const Item = (props) => {
 }
 
 const AddNewListItem = (props) => {
-    const {
-        handleAddListClick, setListTitleText, 
-        cardId, listTitle,
-        listLength, inputExpand
-    } = props;
+    const dispatch = useDispatch();
+    const { cardId } = props;
+    const cardIndex = useSelector(select.cardIds)
+        .map(card => card._id)
+        .indexOf(cardId);
+    const card = useSelector(select.cardIds)[cardIndex];
+    const listIds = card.listIds;
+    const listLength = listIds.length;
+    const listTitle = useSelector(select.listTitle);
+    const expandCardInput = useSelector(select.expandCardInput);
 
     return(
         <NewContainer>
             <NewInput 
                 type='text' 
                 name='item-input'
-                id={cardId}
                 placeholder={listLength ? '+ Add another item' : '+ Add an item'}
                 autoComplete='off'
-                value={listTitle}
-                onChange={setListTitleText}
-                onKeyDown={(e) => e.key === 'Enter' ? handleAddListClick(e) : ''}
+                data-cardid={cardId}
+                value={expandCardInput === cardId ? listTitle: ''}
+                onChange={(e) => dispatch(setListTitle(e))}
+                onKeyDown={(e) => {
+                    e.persist();
+                    return e.key === 'Enter' ? dispatch(handleAddList({ e, cardId })) : ''
+                }
+                }
                 maxLength={60}
-                data-expand={inputExpand === cardId ? true : false }
             />
             <Submit 
                 type='submit'
-                id={cardId}
                 name='submit'
                 value='+ Add item'
-                onClick={handleAddListClick}
+                onClick={(e) => dispatch(handleAddList({ e, cardId }))}
             />
         </NewContainer>
     );

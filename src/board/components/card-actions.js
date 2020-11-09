@@ -1,5 +1,11 @@
+// External modules
 import React from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+
+// Other internal modules
+import * as select from '../selectors/selectors';
+import { handleCardDelete } from '../slices/card-menu-slice';
 
 const Container = styled.div`
     position: absolute;
@@ -34,17 +40,16 @@ const Delete = styled.button`
 `;
 
 const CardActions = (props) => {
-    const { offsets, handleCardDelete, setOffsetsCardOnBlur } = props;
+    const dispatch = useDispatch();
+    const offsets = useSelector(select.CardMenuOffsets);
+
     return(
         <Container 
             id='card-action-menu'
             offsets={offsets}
         >
             <Title>Card actions</Title>
-            <Delete 
-                id='card-action-menu'
-                onClick={handleCardDelete}
-            >
+            <Delete id='card-action-menu' onClick={() => dispatch(handleCardDelete())}>
                 Delete
             </Delete>
         </Container>

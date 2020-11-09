@@ -1,6 +1,11 @@
+// External modules
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import axios from 'axios';
+
+// internal modules
+import * as select from '../selectors/selectors';
+import { handleTextareaExpand, handleItemContent, handleItemDelete, overlayOnClick } from '../slices/item-menu-slice';
 
 const Overlay = styled.div`
     display: flex;
@@ -29,7 +34,7 @@ const Title = styled.h3`
     overflow-wrap: break-word;
     `;
     
-    const Desc = styled.p`
+const Desc = styled.p`
     width: 100%;
     margin-bottom: 24px;
     overflow-wrap: break-word;
@@ -75,33 +80,33 @@ const Delete = styled.input`
 `;
 
 const ListItemExpand = (props) => {
-    const { 
-        itemData: item, cardArray,
-        handleItemData, overlayOnClick, 
-        handleTextareaExpand, inputExpand, 
-        handleItemDelete
-    } = props;
-    const content = item.content;
-    const arrIndex = cardArray.map(card => card._id).indexOf(item.cardId);
-    const cardTitle = cardArray[arrIndex].title;
+    const dispatch = useDispatch();
+    const cardId = useSelector(select.itemMenuCardId);
+    const cardIndex = useSelector(select.cardIds).map(card => card._id).indexOf(cardId);
+    const card = useSelector(select.cardIds)[cardIndex];
+    const itemId = useSelector(select.itemMenuItemId);
+    const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
+    const item = card.listIds[itemIndex];
+    const inputExpand = useSelector(select.itemMenuExpandInput);
+
     return(
         <Overlay
             data-return={true}
-            onClick={overlayOnClick}
+            onClick={(e) => dispatch(overlayOnClick(e))}
         >
             <ItemContainer>
                 <Title>{item.title}</Title>
-                <Desc>From {cardTitle}</Desc>
+                <Desc>From {card.title}</Desc>
                 <ContentContainer
                     id='item-content-input'
                     role='textarea'
                     contentEditable='true'
-                    onClick={handleTextareaExpand}
-                    onBlur={handleItemData}
-                    data-expand={inputExpand === 'item-content-input' ? true : false }
+                    onClick={() => dispatch(handleTextareaExpand)}
+                    onBlur={(e) => dispatch(handleItemContent(e))}
+                    data-expand={ inputExpand === 'item-content-input' ? true : false }
                 >
-                    <pre id='item-content-input' onClick={handleTextareaExpand}>
-                        {content}
+                    <pre id='item-content-input' onClick={() => dispatch(handleTextareaExpand)}>
+                        {item.content}
                     </pre>
                 </ContentContainer>
                 { inputExpand ? 
@@ -109,7 +114,7 @@ const ListItemExpand = (props) => {
                         type='submit'
                         name='submit'
                         value='Save'
-                        onClick={handleItemData}
+                        onClick={(e) => dispatch(handleItemContent(e))}
                     /> : 
                     null 
                 }
@@ -117,7 +122,7 @@ const ListItemExpand = (props) => {
                     type='submit'
                     name='delete'
                     value='Delete'
-                    onClick={handleItemDelete}
+                    onClick={() => dispatch(handleItemDelete())}
                 />
             </ItemContainer>
         </Overlay>

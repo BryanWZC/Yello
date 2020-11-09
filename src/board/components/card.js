@@ -1,11 +1,16 @@
+// External modules
 import React from 'react';
 import styled from 'styled-components';
 import { Droppable , Draggable } from 'react-beautiful-dnd';
+import { useSelector, useDispatch } from 'react-redux';
+
+// Internal modules - components
 import { List, AddNewListItem } from './list';
 
-import { boardData } from '../reducers/boardReducers'
-import { useSelector, useStore, useDispatch } from 'react-redux';
-import { getBoardData } from '../reducers/boardReducers';
+// Other internal modules
+import * as select from '../selectors/selectors';
+import { handleAddCard, setCardTitle } from '../slices/board-slice';
+import { setOffsetsCard } from '../slices/card-menu-slice';
 
 /**
  * Styles for cards
@@ -113,13 +118,9 @@ const Submit = styled.input`
 `;
 
 const Cards = (props) => {
-    const { 
-        handleAddListClick, setListTitleText, 
-        cardObjArr, handleItemClick,
-        inputExpand, setOffsetsCard,
-        boardId
-    } = props;
-
+    const boardData = useSelector(select.boardData) || {};
+    const cardIds = Object.keys(boardData).length ? boardData.cardIds : [];
+    
     return(
         <Droppable
             droppableId='all-cards'
@@ -131,18 +132,9 @@ const Cards = (props) => {
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                 >
-                    {cardObjArr.map((cardObj, index) =>
-                        <Card 
-                            cardObj={cardObj}
-                            handleAddListClick={handleAddListClick}
-                            setListTitleText={setListTitleText}
-                            handleItemClick={handleItemClick}
-                            key={cardObj._id}
-                            index={index}
-                            inputExpand={inputExpand}
-                            setOffsetsCard={setOffsetsCard}
-                            boardId={boardId}
-                        />)}
+                    {cardIds.map((card, index) =>
+                        <Card card={card} index={index} key={card._id}/>)
+                    }
                     {provided.placeholder}
                 </CardsContainer>
             }
@@ -151,16 +143,9 @@ const Cards = (props) => {
 }
 
 const Card = (props) => {
-    const { 
-        handleAddListClick, setListTitleText, 
-        cardObj, listTitle,
-        index, handleItemClick,
-        inputExpand, setOffsetsCard,
-        boardId
-    } = props;
-
-    const id = cardObj._id;
-    const listObjArr = cardObj.listIds;
+    const dispatch = useDispatch();
+    const { card, index } = props;
+    const id = card._id;
 
     return(
         <Draggable draggableId={id} index={index}>
@@ -173,32 +158,21 @@ const Card = (props) => {
                         {...provided.dragHandleProps}
                     >
                         <CardTitle>
-                            {cardObj.title}
+                            {card.title}
                         </CardTitle>
-                        <ActionButton
-                            data-cardid={id}
-                            data-boardid={boardId}
-                            onClick={setOffsetsCard}
-                        >
+                        <ActionButton data-cardid={id} onClick={(e) => dispatch(setOffsetsCard(e))}>
                             <ThreeDots src='./svg/ellipsis.svg'/>
                         </ActionButton>
                     </TitleContainer>
                     <Droppable droppableId={id} type='list'>
-                    {(provided, snapshot) => 
-                        <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
-                                <List listObjArr={ listObjArr } cardId={id} handleItemClick={handleItemClick}/>
+                        {(provided, snapshot) => 
+                            <ListContainer {...provided.droppableProps} ref={provided.innerRef}>
+                                <List cardId={id} />
                                 {provided.placeholder}
                             </ListContainer>
-                        }
-                        </Droppable>
-                        <AddNewListItem 
-                            handleAddListClick={handleAddListClick}
-                            setListTitleText={setListTitleText}
-                            cardId={id}
-                            listTitle={listTitle}
-                            listLength={listObjArr.length}
-                            inputExpand={inputExpand}
-                        />
+                            }
+                    </Droppable>
+                    <AddNewListItem cardId={id} />
                 </CardContainer>
             }
             </Draggable>
@@ -206,7 +180,9 @@ const Card = (props) => {
 };
 
 const AddNewCard = (props) => {
-    const { handleAddCardClick, setTitleText, length , cardTitle} = props;
+    const dispatch = useDispatch();
+    const boardData = useSelector(select.boardData);
+    const length = boardData.cardIds.length;
 
     return(
         <AddCardContainer>
@@ -216,16 +192,19 @@ const AddNewCard = (props) => {
                 name='card-placeholder'
                 placeholder={ length > 0 ? '+ Add another card' : '+ Add a card'}
                 autoComplete='off'
-                value={cardTitle}
-                onChange={setTitleText}
-                onKeyDown={(e) => e.key === 'Enter' ? handleAddCardClick() : ''}
+                value={useSelector(select.cardTitle)}
+                onChange={(e) => dispatch(setCardTitle(e))}
+                onKeyDown={(e) => {
+                    e.persist();
+                    return e.key === 'Enter' ? dispatch(handleAddCard(e)) : ''}
+                }
                 maxLength={60}
             />
             <Submit 
                 type='submit'
                 name='submit'
                 value='Add Card'
-                onClick={handleAddCardClick}
+                onClick={(e) => dispatch(handleAddCard(e))}
                 />
         </AddCardContainer>
     );

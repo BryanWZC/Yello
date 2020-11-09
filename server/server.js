@@ -167,7 +167,8 @@ async function addNewListItem({ cardId, listTitle }) {
  * @return {null} 
  */
 async function updateCardOrder({ boardId, newCardIds }) {
-    await Board.findByIdAndUpdate(boardId, { cardIds: newCardIds }, { useFindAndModify: false }).exec();
+    const temp = await Board.findByIdAndUpdate(boardId, { cardIds: newCardIds }, { new: true, useFindAndModify: false }).exec();
+    console.log(temp)
 }   
 
 /**
