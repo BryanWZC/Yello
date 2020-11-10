@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 // internal modules
 import * as select from '../selectors/selectors';
+import * as util from '../utility/general';
 import { handleTextareaExpand, handleItemContent, handleItemDelete, overlayOnClick } from '../slices/item-menu-slice';
 
 const Overlay = styled.div`
@@ -82,16 +83,14 @@ const Delete = styled.input`
 const ListItemExpand = (props) => {
     const dispatch = useDispatch();
     const cardId = useSelector(select.itemMenuCardId);
-    const cardIndex = useSelector(select.cardIds).map(card => card._id).indexOf(cardId);
-    const card = useSelector(select.cardIds)[cardIndex];
     const itemId = useSelector(select.itemMenuItemId);
-    const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
-    const item = card.listIds[itemIndex];
+    const card = util.getCardFromId(cardId);
+    const item = util.getItemFromId(cardId, itemId) || {};
     const inputExpand = useSelector(select.itemMenuExpandInput);
 
     return(
         <Overlay
-            data-return={true}
+            id='list-item-overlay'
             onClick={(e) => dispatch(overlayOnClick(e))}
         >
             <ItemContainer>
@@ -101,11 +100,11 @@ const ListItemExpand = (props) => {
                     id='item-content-input'
                     role='textarea'
                     contentEditable='true'
-                    onClick={() => dispatch(handleTextareaExpand)}
+                    onClick={() => dispatch(handleTextareaExpand())}
                     onBlur={(e) => dispatch(handleItemContent(e))}
-                    data-expand={ inputExpand === 'item-content-input' ? true : false }
+                    data-expand={ inputExpand ? true : false }
                 >
-                    <pre id='item-content-input' onClick={() => dispatch(handleTextareaExpand)}>
+                    <pre id='item-content-input' onClick={() => dispatch(handleTextareaExpand())}>
                         {item.content}
                     </pre>
                 </ContentContainer>

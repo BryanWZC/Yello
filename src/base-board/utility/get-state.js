@@ -6,7 +6,8 @@ import axios from 'axios';
  * @return {Object}         - board doc object
  */
 async function getBoard(boardId) {
-    return (await axios('/get-board?boardId=' + boardId)).data
+    const { _id, cardIds, title } = (await axios('/get-board?boardId=' + boardId)).data
+    return { _id, cardIds, title };
 };
 
 /**
@@ -15,7 +16,8 @@ async function getBoard(boardId) {
  * @return {Object}        - card doc object 
  */
 async function getCard(cardId) {
-    return (await axios('/get-card?cardId=' + cardId)).data;
+    const { _id, listIds, title } = (await axios('/get-card?cardId=' + cardId)).data;
+    return { _id, listIds, title };
 }
 
 /**
@@ -24,7 +26,8 @@ async function getCard(cardId) {
  * @return {Object}        - list doc object
  */
 async function getList(listId) {
-    return (await axios('/get-item?listId=' + listId)).data;
+    const { _id, content, title } = (await axios('/get-item?listId=' + listId)).data;
+    return { _id, content, title };
 }
 
 /**

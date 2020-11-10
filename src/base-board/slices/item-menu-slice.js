@@ -2,27 +2,32 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 // Internal modules
-import { checkMenuElement, updateDBItemContent } from '../utility/update-item-menu';
+import { checkMenuElement, updateDBItemContent, updateDBItemDelete } from '../utility/update-item-menu';
 import { boardData } from './board-slice';
 
 /**
  * Handles item content within textarea to update DB and state.
  */
 const handleItemContent = createAsyncThunk(
-    'itemMenu/handleItemData',
+    'itemMenu/handleItemContent',
     async(e, { getState }) => {
         e.persist();
         const { boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
-        const itemData = { ...boardData[cardId].listIds[itemId] };
-
-        if(!e.target.getAttribute('id')) return { displayItemMenu: false };
+        const cardIndex = boardData.cardIds.map(card => card._id).indexOf(cardId);
+        const card = boardData.cardIds[cardIndex];
+        const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
+        const item = card.listIds[itemIndex];
 
         const target = checkMenuElement(e);
         const content = target.innerText.trim();
         
         if(content === '') target.innerHTML = "<pre id='item-content-input'></pre>";
-        if(temp !== content) await updateDBItemContent(itemData, content);
+        if(item.content !== content) {
+            updateDBItemContent(item, content);
+            return { cardIndex, itemIndex, content };
+        }
+        return;
 });
 
 /**
@@ -34,10 +39,10 @@ const handleItemDelete = createAsyncThunk(
         const { boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
         
-        const listIds = boardData.cardIds[cardId].listIds
-            .filter(item => item._id !== itemId);
-
-        return { cardId, listIds, itemId };
+        const card = boardData.cardIds.filter(card => card._id === cardId)[0];
+        const listIds = card.listIds.filter(item => item._id !== itemId);
+        updateDBItemDelete(cardId, itemId);
+        return { cardId, listIds };
     }
 )
 
@@ -75,34 +80,35 @@ export const itemMenuData = createSlice({
         },
         overlayOnClick: {
             reducer: (state, { payload }) => {
-                const { expandInput, displayItemMenu, cardId, itemId } = payload;
-                if(expandInput) state.expandInput = expandInput;
-                if(displayItemMenu && cardId && itemId) {
-                    state.displayItemMenu = displayItemMenu;
-                    state.cardId = cardId;
-                    state.itemId = itemId;
+                if(payload === 'WRITING CONTENT') return;
+                if(state.expandInput) state.expandInput = false;
+                else {
+                    state.displayItemMenu = false;
+                    state.cardId = '';
+                    state.itemId = '';
                 }
             },
             /**
-             * Handles overlay on click to clear out and reveal Board component
-             * @param {Object} e - event object 
+             * Resets state for item menu on overlay click 
              */
             prepare: (e) => {
                 e.persist();
-                if(!e.target.getAttribute('id')) return{ 
-                    payload:{ expandInput: false }
-                };
-                if(e.target.getAttribute('data-return')) return {
-                    payload: { displayItemMenu: false, cardId: '', itemId: '' }
-                };
+                if(e.target.getAttribute('id') === 'item-content-input') return { payload: 'WRITING CONTENT' };
+                return { payload: 'RESET VALUES' };
             }
         },
     },
     extraReducers: { 
         [handleItemContent.fulfilled]: (state, { payload }) => { },
+        [handleItemDelete.fulfilled]: (state, { payload }) => {
+            state.displayItemMenu = false;
+            state.expandInput = false;
+            state.cardId = '';
+            state.itemId = '';
+        }
     }
 });
 
-export  const { handleTextareaExpand, handleItemClick, overlayOnClick } = itemMenuData.actions;
+export  const { handleTextareaExpand, handleItemClick, overlayOnClick, onBlurContent } = itemMenuData.actions;
 
 export { handleItemContent, handleItemDelete };

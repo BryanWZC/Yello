@@ -42,7 +42,7 @@ const NewContainer = styled.div`
 `;
 
 const NewInput = styled.input`
-    height: ${props => props['data-expand'] ? '66px' : '32px'};;
+    height: ${props => props['data-expand'] ? '66px' : '32px'};
     width: 100%;
     border: none;
     border-radius: 5px;
@@ -53,7 +53,7 @@ const NewInput = styled.input`
 const Submit = styled.input`
     height: 32px;
     border-radius: 5px;
-    border: 0;
+    border: none;
     padding: 4px;
     background-color: #5aac44;
     cursor: pointer;
@@ -63,7 +63,7 @@ const List = (props) => {
     const { cardId } = props;
     const index = useSelector(select.cardIds).map(card => card._id).indexOf(cardId);
     const card = useSelector(select.cardIds)[index];
-    const listIds = card.listIds;
+    const listIds = card.listIds || [];
 
     return(
         <React.Fragment>

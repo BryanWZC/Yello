@@ -23,18 +23,6 @@ const setOffsetsCard = createAsyncThunk(
 });
 
 /**
- * Reset offset state and hide the card action menu when click everywhere except the card action menu. PLaced globally on the global container.
- */
-const resetCardMenuState = createAsyncThunk(
-    'cardMenu/resetCardMenuState', 
-    (e, { getState }) =>  {
-        e.persist();
-        const { offsets } = getState().cardMenuData; 
-        if(offsets && e.target.getAttribute('id') !== 'card-action-menu') return { offsets: null, cardId: '' };
-        return false;
-});
-
-/**
  * Handles card deletes from menu. Action handled in board slice for boardData update.
  */
 const handleCardDelete = createAsyncThunk(
@@ -63,17 +51,16 @@ export const cardMenuData = createSlice({
     reducers: { 
         cardMenuStateReset: {
             reducer: (state, { payload }) => {
-                const { offsets, cardId } = payload;
-                state.offsets = offsets;
-                state.cardId = cardId;
+                state.offsets = null;
+                state.cardId = '';
                 state.displayCardMenu = false;
             },
             /**
-             * Resets states after deletion of card
+             * Resets states
              */
             prepare: () => { 
                 return { 
-                    payload: { offsets: null, cardId: '' } 
+                    payload: 'RESET' 
                 }
             } 
         },
@@ -87,17 +74,14 @@ export const cardMenuData = createSlice({
             if(offsets) state.displayCardMenu = true;
             else state.displayCardMenu = false;
         },
-        [resetCardMenuState.fulfilled]: (state, { payload }) => {
-            if(!payload) return;
-
-            const { offsets, cardId } = payload;
-            state.offsets = offsets;
-            state.cardId = cardId;
+        [handleCardDelete.fulfilled]: (state, { payload }) => {
             state.displayCardMenu = false;
+            state.offsets = null;
+            state.cardId = '';
         }
     }
 });
 
 export const { cardMenuStateReset } = cardMenuData.actions;
 
-export { setOffsetsCard, resetCardMenuState, handleCardDelete };
+export { setOffsetsCard, handleCardDelete };

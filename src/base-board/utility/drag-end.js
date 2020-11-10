@@ -42,7 +42,7 @@ export async function updateDBCardOrder(boardId, newCardIds) {
  * @param  {Object} cardIds        - object of card objects referenced by ids
  * @param  {Object} source         - contains start drag data
  * @param  {Object} destination    - contains end drag data
- * @return {Object}                - object containing newCardIds and start and end card data upon drag end
+ * @return {Object}                - object containing start index, end index, start card and end card
  */
 export function newCardIdsOnListDrag(cardIds, source, destination) {
     if(!destination) return;
@@ -56,26 +56,19 @@ export function newCardIdsOnListDrag(cardIds, source, destination) {
     const endListIds = [...cardIds[endIndex].listIds];
     const startItem = startListIds.splice(source.index, 1)[0];
 
-    let newStartCard, newEndCard;
+    let startCard, endCard;
     if(startIndex === endIndex){
         startListIds.splice(destination.index, 0, startItem);
-        newStartCard = { ...cardIds[startIndex], listIds: startListIds };
-        newEndCard = newStartCard;
+        startCard = { ...cardIds[startIndex], listIds: startListIds };
+        endCard = startCard;
     }
     else{
         endListIds.splice(destination.index, 0, startItem);
-        newStartCard = { ...cardIds[startIndex], listIds: startListIds };
-        newEndCard = { ...cardIds[endIndex], listIds: endListIds };
+        startCard = { ...cardIds[startIndex], listIds: startListIds };
+        endCard = { ...cardIds[endIndex], listIds: endListIds };
     } 
 
-    return { newCardIds: cardIds.map((card, index) => {
-        if(index === startIndex) return newStartCard;
-        if(index === endIndex) return newEndCard;
-        return card;
-    }), 
-        startCard: newStartCard, 
-        endCard: newEndCard
-    };
+    return { startIndex, endIndex, startCard, endCard };
 } 
 
 /**

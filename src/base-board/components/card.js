@@ -98,20 +98,32 @@ const ListContainer = styled.div`
  */
 const AddCardContainer = styled.div`
     display: flex;
-    width: 100%;
-    height: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 270px;
+    height: 85px;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 8px 8px 0 8px;
+    background-color: #f4f5f7;
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
 `;
 
 const Input = styled.input`
-    height: 100%;
+    height: 32px;
+    width: 100%;
     border: none;
+    border-radius: 5px;
+    margin-bottom: 8px;
     padding-left: 4px;
 `;
 
 const Submit = styled.input`
-    height: 100%;
-    border: none;
+    height: 32px;
+    width: 64px;
     border-radius: 5px;
+    border: none;
     padding: 4px;
     background-color: #5aac44;
     cursor: pointer;

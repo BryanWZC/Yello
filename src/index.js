@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 
 // Internal modules
 import { rootReducer } from './combine-slice';
-import { Board } from './board/components/board';
+import { Board } from './base-board/components/board';
 
 const store = configureStore({ reducer: rootReducer });
 

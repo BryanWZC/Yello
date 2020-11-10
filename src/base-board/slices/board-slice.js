@@ -9,7 +9,7 @@ import * as dragUtil from '../utility/drag-end';
 
 // Internal modules - slices
 import { cardMenuData, handleCardDelete } from './card-menu-slice';
-import { handleItemDelete } from './item-menu-slice';
+import { handleItemContent, handleItemDelete } from './item-menu-slice';
 
 // Async state functions 
 const getBoardData = createAsyncThunk(
@@ -20,7 +20,7 @@ const getBoardData = createAsyncThunk(
         } catch (err) {
             return err;
         }
-    });
+});
 
 /**
  * Adds a new card
@@ -73,16 +73,16 @@ const onDragEnd = createAsyncThunk(
             if(type === 'card'){
                 const newCardIds = dragUtil.getUpdatedCardIds(cardIds, source, destination);
                 dragUtil.updateDBCardOrder(boardId, newCardIds)
-                return { boardId, newCardIds };
+                return { type, newCardIds };
             }
             if(type === 'list'){
-                const { newCardIds, startCard, endCard } = dragUtil.newCardIdsOnListDrag(cardIds, source, destination);
+                const { startCard, endCard, startIndex, endIndex } = dragUtil.newCardIdsOnListDrag(cardIds, source, destination);
                 dragUtil.updateDBListOrder(startCard, endCard);
                 
-                return { boardId, newCardIds };
+                return { type, startCard, endCard, startIndex, endIndex };
         }
         } catch (err) {
-            return err
+            return err;
         }
     }
 );
@@ -119,7 +119,7 @@ export const boardData = createSlice({
                 return { payload: {
                     cardId,
                     value: e.target.value,
-                    } 
+                    }
                 };
             }
         },
@@ -142,17 +142,29 @@ export const boardData = createSlice({
         },
         [onDragEnd.fulfilled]: (state, { payload }) => {
             if(!payload) return;
-            const { newCardIds } = payload;
-            state.boardData.cardIds = newCardIds;
+            const { type, startCard, endCard, startIndex, endIndex, newCardIds } = payload;
+            if(type === 'list') {
+                state.boardData.cardIds[startIndex].listIds = startCard.listIds;
+                if(startIndex === endIndex) return;
+                state.boardData.cardIds[endIndex].listIds = endCard.listIds;
+            }
+            if(type === 'card') {
+                state.boardData.cardIds = newCardIds;
+            }
         },
         [handleCardDelete.fulfilled]: (state, { payload }) => {
             state.boardData.cardIds = payload;
         },
-        [handleItemDelete.fulfilled]: async(state, { payload }) => {
-            const { cardId, listIds, itemId } = payload;
-            state.boardData.cardIds[cardId].listIds = listIds;
-            await updateDBItemDelete(cardId, itemId);
-        }
+        [handleItemContent.fulfilled]: (state, { payload }) => {
+            if(!payload) return;
+            const { cardIndex, itemIndex, content } = payload;
+            state.boardData.cardIds[cardIndex].listIds[itemIndex].content = content;
+        },
+        [handleItemDelete.fulfilled]: (state, { payload }) => {
+            const { cardId, listIds } = payload;
+            const index = state.boardData.cardIds.map(card => card._id).indexOf(cardId);
+            state.boardData.cardIds[index].listIds = listIds;
+        },
     }
 });
 

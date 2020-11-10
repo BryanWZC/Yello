@@ -137,9 +137,6 @@ app.listen(port, async () => {
  */
 async function addNewCard({ boardId, cardTitle }) {
     const queryTitle = { title: cardTitle };
-    const cardExists = await Card.findOne(queryTitle).lean().exec();
-    
-    if(cardExists) return;
     
     const newCard = await Card.create(queryTitle);
     const { _id, title, listIds } = newCard;
@@ -167,8 +164,7 @@ async function addNewListItem({ cardId, listTitle }) {
  * @return {null} 
  */
 async function updateCardOrder({ boardId, newCardIds }) {
-    const temp = await Board.findByIdAndUpdate(boardId, { cardIds: newCardIds }, { new: true, useFindAndModify: false }).exec();
-    console.log(temp)
+    await Board.findByIdAndUpdate(boardId, { cardIds: newCardIds }, { new: true, useFindAndModify: false }).exec();
 }   
 
 /**
