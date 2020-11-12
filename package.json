@@ -4,7 +4,8 @@
   "description": "Trelloesque applicaption for organizing workflow and time management",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test unsplash utility": "jest ./src/unsplash-image-picker/utility/test/",
     "start": "node ./server/server.js",
     "build": "webpack --config ./webpack.config.js",
     "dev": "webpack-dev-server --hot"
@@ -45,6 +46,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-styled-components": "^1.11.1",
     "css-loader": "^4.3.0",
+    "jest": "^26.6.3",
     "redux-devtools": "^3.7.0",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",

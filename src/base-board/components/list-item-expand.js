@@ -20,7 +20,7 @@ const Overlay = styled.div`
 `;
 
 const ItemContainer = styled.div`
-    position: relative;
+    position: absolute;
     width: 600px;
     min-height: 250px;
     border: none;
@@ -33,7 +33,8 @@ const Title = styled.h3`
     width: 100%;
     margin-bottom: 8px;
     overflow-wrap: break-word;
-    `;
+    padding-right: 20px;
+`;
     
 const Desc = styled.p`
     width: 100%;
@@ -80,6 +81,31 @@ const Delete = styled.input`
     cursor: pointer;
 `;
 
+const CloseButton = styled.button`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 25px;
+    width: 25px;
+    background-color: transparent;
+    top: 16px;
+    right: 16px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+
+    &:hover > img {
+        opacity: 0.5;
+    }
+`;
+
+const CloseIcon = styled.img`
+    width: 25px;
+    height: 25px;
+    fill: #333333;
+`;
+
 const ListItemExpand = (props) => {
     const dispatch = useDispatch();
     const cardId = useSelector(select.itemMenuCardId);
@@ -123,6 +149,9 @@ const ListItemExpand = (props) => {
                     value='Delete'
                     onClick={() => dispatch(handleItemDelete())}
                 />
+                <CloseButton onClick={(e) => dispatch(overlayOnClick(e))}>
+                    <CloseIcon src='./svg/close.svg'/>
+                </CloseButton>
             </ItemContainer>
         </Overlay>
     );

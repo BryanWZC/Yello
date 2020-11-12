@@ -1,0 +1,25 @@
+// External modules
+import axios from 'axios';
+
+/**
+ * Fetch page of images (default 10 according to api) in json format from unsplash API. Server acts as middleman to unsplash server.
+ * @param {String} query - photo query
+ * @param {String} page  - page of photos displayed
+ */
+export async function fetchJsonData(query, page = 1) {
+    const jsonData = (await axios.get(`/get-unsplash-images?query=${query}&page=${page}`)).data;
+    return filterJsonData(jsonData)
+};
+
+/**
+ * Filters raw json data from unsplash to display only necessary information
+ * @param  {Object} jsonData - raw image json data obtained from Unsplash to be filtered
+ * @return {Object}          - filtered json object
+ */
+export function filterJsonData(jsonData) {
+    const filteredResults = jsonData.results.map(imageData => {
+        const { id,  urls: { thumb = null, full = null}, user: { name = null, links: { html = null } }} = imageData;
+        return { id, thumb, full, name, userSite: html };
+    });
+    return { ...jsonData, results: filteredResults };
+}

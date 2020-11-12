@@ -28,7 +28,7 @@ const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 270px;
-    min-height: 100px;
+    min-height: 130px;
     border: none;
     border-radius: 5px;
     padding: 8px;
@@ -68,10 +68,8 @@ const ActionButton = styled.button`
     border: none;
     cursor: pointer;
     background: none;
+    outline: none;
 
-    &:focus {
-        outline: none;
-    }
     &:hover {
         background: #CED1DA;
     }
@@ -101,7 +99,7 @@ const AddCardContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
     min-width: 270px;
-    height: 85px;
+    height: 90px;
     border: none;
     border-radius: 5px;
     padding: 8px;

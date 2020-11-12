@@ -5,11 +5,14 @@ export const cardIds = (state) => state.boardData.boardData.cardIds;
 
 export const cardTitle = (state) => state.boardData.cardTitle;
 
+export const background = (state) => state.boardData.boardData.background;
+
 export const expandCardInput = (state) => state.boardData.expandCardInput;
 
 export const listTitle = (state) => state.boardData.listTitle;
 
 export const renderAddCard = (state) => state.boardData.renderAddCard;
+
 
 // Selections from cardMenuData slice
 export const displayCardMenu = (state) => state.cardMenuData.displayCardMenu;

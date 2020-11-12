@@ -24,7 +24,7 @@ const handleItemContent = createAsyncThunk(
         
         if(content === '') target.innerHTML = "<pre id='item-content-input'></pre>";
         if(item.content !== content) {
-            updateDBItemContent(item, content);
+            await updateDBItemContent(item, content);
             return { cardIndex, itemIndex, content };
         }
         return;
@@ -41,7 +41,7 @@ const handleItemDelete = createAsyncThunk(
         
         const card = boardData.cardIds.filter(card => card._id === cardId)[0];
         const listIds = card.listIds.filter(item => item._id !== itemId);
-        updateDBItemDelete(cardId, itemId);
+        await updateDBItemDelete(cardId, itemId);
         return { cardId, listIds };
     }
 )

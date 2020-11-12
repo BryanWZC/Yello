@@ -6,8 +6,8 @@ import axios from 'axios';
  * @return {Object}         - board doc object
  */
 async function getBoard(boardId) {
-    const { _id, cardIds, title } = (await axios('/get-board?boardId=' + boardId)).data
-    return { _id, cardIds, title };
+    const { _id, cardIds, title, background } = (await axios('/get-board?boardId=' + boardId)).data
+    return { _id, cardIds, title, background };
 };
 
 /**

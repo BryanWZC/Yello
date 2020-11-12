@@ -8,8 +8,9 @@ import { addNewListItem, inputFieldReset } from '../utility/add-list';
 import * as dragUtil from '../utility/drag-end';
 
 // Internal modules - slices
-import { cardMenuData, handleCardDelete } from './card-menu-slice';
+import { handleCardDelete } from './card-menu-slice';
 import { handleItemContent, handleItemDelete } from './item-menu-slice';
+import { changeBackground } from '../../unsplash-image-picker/slices/background-slice';
 
 // Async state functions 
 const getBoardData = createAsyncThunk(
@@ -164,6 +165,10 @@ export const boardData = createSlice({
             const { cardId, listIds } = payload;
             const index = state.boardData.cardIds.map(card => card._id).indexOf(cardId);
             state.boardData.cardIds[index].listIds = listIds;
+        },
+        [changeBackground.fulfilled]: (state, { payload }) => {
+            const { background } = payload;
+            state.boardData.background = background;
         },
     }
 });
