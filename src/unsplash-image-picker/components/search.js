@@ -1,7 +1,7 @@
 // External modules
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // Internal modules
 import { searchInputOnChange, confirmQuery, fetchImageJson } from '../slices/background-slice';
@@ -42,6 +42,11 @@ const Search = (props) => {
                 name='unsplash-search'
                 placeholder='Add a background!'
                 onChange={ (e) => dispatch(searchInputOnChange(e)) }
+                onKeyDown={(e) => {
+                    e.persist();
+                    return e.key === 'Enter' ? dispatch(searchInputOnChange({e})) : ''
+                }
+                }
             />
             <SearchButton onClick={ () => {
                 dispatch(confirmQuery());

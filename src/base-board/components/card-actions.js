@@ -37,6 +37,14 @@ const Title = styled.p`
 const Delete = styled.button`
     width: 100%;
     cursor: pointer;
+    border: none;
+    background-color: transparent;
+    padding: 4px 0;
+    outline: none;
+
+    &:hover {
+        background: rgba(0,0,0,.04);
+    }
 `;
 
 const CardActions = (props) => {

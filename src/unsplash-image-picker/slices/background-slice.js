@@ -27,10 +27,13 @@ const changeBackground = createAsyncThunk(
     async(index, { getState }) => {
         const { _id: boardId } = getState().boardData.boardData;
         const { filteredImageJson } = getState().backgroundData;
-        const backgroundLink = filteredImageJson.results[index].full;
-        updateBackground({ boardId, backgroundLink });
+        const imageData = filteredImageJson.results[index];
+        const backgroundLink = imageData.full;
+        const blurHash = imageData.blur_hash;
+        updateBackground({ boardId, backgroundLink, blurHash });
         return {
             background: backgroundLink,
+            blurHash,
         };
     }
 )
@@ -47,7 +50,8 @@ export const backgroundData = createSlice({
     },
     reducers: { 
         enableImageSearch: (state) => {
-            state.displayImageSearch = true;
+            if(state.displayImageSearch) state.displayImageSearch = false;
+            else state.displayImageSearch = true;
         },
         searchInputOnChange: {
             reducer: (state, { payload }) => {

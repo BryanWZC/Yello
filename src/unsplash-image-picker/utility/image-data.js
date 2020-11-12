@@ -8,7 +8,7 @@ import axios from 'axios';
  */
 export async function fetchJsonData(query, page = 1) {
     const jsonData = (await axios.get(`/get-unsplash-images?query=${query}&page=${page}`)).data;
-    return filterJsonData(jsonData)
+    return filterJsonData(jsonData);
 };
 
 /**
@@ -18,8 +18,8 @@ export async function fetchJsonData(query, page = 1) {
  */
 export function filterJsonData(jsonData) {
     const filteredResults = jsonData.results.map(imageData => {
-        const { id,  urls: { thumb = null, full = null}, user: { name = null, links: { html = null } }} = imageData;
-        return { id, thumb, full, name, userSite: html };
+        const { id, blur_hash, color,  urls: { thumb = null, full = null}, user: { name = null, links: { html = null } }} = imageData;
+        return { id, blur_hash, color, thumb, full, name, userSite: html };
     });
     return { ...jsonData, results: filteredResults };
 }

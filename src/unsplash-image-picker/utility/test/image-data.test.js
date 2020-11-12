@@ -15,12 +15,14 @@ test('Evaluate unsplash filtered json data for length of 10, and existence of to
     expect(jsonData.total_pages).toBeTruthy();
 });
 
-test('Evaluate each image data object from the json result to have only 5 entries: id, thumb, raw, name, userSite', async () => {
+test('Evaluate each image data object from the json result to have only 7 entries: id, blur_hash, color, thumb, raw, name, userSite', async () => {
     const jsonData = await fetchJsonData('dogs');
     jsonData.results.forEach(imageData => {
-        const { id, thumb, raw, name, userSite } = imageData;
-        expect(Object.keys(imageData).length).toBe(5);
+        const { id, blur_hash, color, thumb, raw, name, userSite } = imageData;
+        expect(Object.keys(imageData).length).toBe(7);
         expect(id).toBeTruthy;
+        expect(blur_hash).toBeTruthy;
+        expect(color).toBeTruthy;
         expect(thumb).toBeTruthy;
         expect(raw).toBeTruthy;
         expect(name).toBeTruthy;

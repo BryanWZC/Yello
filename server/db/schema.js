@@ -37,6 +37,10 @@ module.exports= {
             type: String,
             default: '',
         },
+        blurHash: {
+            type: String,
+            default: '',
+        }
     }, {timestamps: true}),
     cardSchema: new mongoose.Schema({
         title: String,

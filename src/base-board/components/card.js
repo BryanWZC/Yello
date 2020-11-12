@@ -1,5 +1,5 @@
 // External modules
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Droppable , Draggable } from 'react-beautiful-dnd';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import { List, AddNewListItem } from './list';
 
 // Other internal modules
 import * as select from '../selectors/selectors';
-import { handleAddCard, setCardTitle } from '../slices/board-slice';
+import { handleAddCard, setCardTitle, setExpandCardInput } from '../slices/board-slice';
 import { setOffsetsCard } from '../slices/card-menu-slice';
 
 /**
@@ -28,7 +28,7 @@ const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 270px;
-    min-height: 130px;
+    min-height: 110px;
     border: none;
     border-radius: 5px;
     padding: 8px;
@@ -45,7 +45,7 @@ const TitleContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 32px;
+    height: auto;
     margin-bottom: 8px;
     border: none;
     cursor: pointer;
@@ -55,7 +55,7 @@ const CardTitle = styled.h3`
     align-text: center;
     height: auto;
     padding-left: 4px;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     cursor: pointer;
 `;
 
@@ -63,8 +63,8 @@ const ActionButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 32px;
-    height: inherit;
+    min-width: 32px;
+    min-height: 32px;
     border: none;
     cursor: pointer;
     background: none;
@@ -99,7 +99,7 @@ const AddCardContainer = styled.div`
     flex-direction: column;
     align-items: flex-start;
     min-width: 270px;
-    height: 90px;
+    height: auto;
     border: none;
     border-radius: 5px;
     padding: 8px;
@@ -115,6 +115,9 @@ const Input = styled.input`
     border-radius: 5px;
     margin-bottom: 8px;
     padding-left: 4px;
+    outline: none;
+    background-color: ${ props => props['data-expand'] ? '#ffffff': 'rgba(0,0,0,.04)' };
+    color: #42526e ;
 `;
 
 const Submit = styled.input`
@@ -123,6 +126,7 @@ const Submit = styled.input`
     border-radius: 5px;
     border: none;
     padding: 4px;
+    outline: none;
     background-color: #5aac44;
     cursor: pointer;
 `;
@@ -192,30 +196,36 @@ const Card = (props) => {
 const AddNewCard = (props) => {
     const dispatch = useDispatch();
     const boardData = useSelector(select.boardData);
+    const expandCardInput = useSelector(select.expandCardInput);
     const length = boardData.cardIds.length;
 
     return(
-        <AddCardContainer>
+        <AddCardContainer id='add-card-input'>
             <Input 
                 type='text' 
-                id='card-input' 
+                id='add-card-input' 
                 name='card-placeholder'
                 placeholder={ length > 0 ? '+ Add another card' : '+ Add a card'}
+                data-expand={ expandCardInput }
                 autoComplete='off'
                 value={useSelector(select.cardTitle)}
                 onChange={(e) => dispatch(setCardTitle(e))}
+                onClick={(e) => dispatch(setExpandCardInput())}
                 onKeyDown={(e) => {
                     e.persist();
                     return e.key === 'Enter' ? dispatch(handleAddCard(e)) : ''}
                 }
                 maxLength={60}
             />
-            <Submit 
-                type='submit'
-                name='submit'
-                value='Add Card'
-                onClick={(e) => dispatch(handleAddCard(e))}
-                />
+            { expandCardInput ? 
+                <Submit 
+                    type='submit'
+                    name='submit'
+                    value='Add Card'
+                    onClick={(e) => dispatch(handleAddCard(e))}
+                /> : 
+                null
+            }
         </AddCardContainer>
     );
 }

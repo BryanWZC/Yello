@@ -6,7 +6,7 @@ import { Draggable } from 'react-beautiful-dnd';
 
 // internal modules
 import * as select from '../selectors/selectors';
-import { handleAddList, setListTitle } from '../slices/board-slice';
+import { handleAddList, setListTitle, setExpandListInput, closeListInput } from '../slices/board-slice';
 import { handleItemClick } from '../slices/item-menu-slice';
 
 /**
@@ -27,7 +27,7 @@ const ItemTitle = styled.h4`
     overflow-wrap: break-word;
     padding: 4px;
     border-radius: 5px;
-    height: 32px;
+    min-height: 32px;
     pointer-events: none;
 `;
 
@@ -41,13 +41,18 @@ const NewContainer = styled.div`
     width: 100%;
 `;
 
-const NewInput = styled.input`
+const NewInput = styled.textarea`
     height: ${props => props['data-expand'] ? '66px' : '32px'};
     width: 100%;
     border: none;
     border-radius: 5px;
     margin-bottom: 8px;
     padding-left: 4px;
+    resize: none;
+    padding-top: 7px;
+    outline: none;
+    overflow: none;
+    background-color: ${ props => props['data-expand'] ? '#ffffff': 'rgba(0,0,0,.04)' };
 `;
 
 const Submit = styled.input`
@@ -55,6 +60,7 @@ const Submit = styled.input`
     border-radius: 5px;
     border: none;
     padding: 4px;
+    outline: none;
     background-color: #5aac44;
     cursor: pointer;
 `;
@@ -109,7 +115,7 @@ const AddNewListItem = (props) => {
     const listIds = card.listIds;
     const listLength = listIds.length;
     const listTitle = useSelector(select.listTitle);
-    const expandCardInput = useSelector(select.expandCardInput);
+    const expandListInput = useSelector(select.expandListInput);
 
     return(
         <NewContainer>
@@ -119,21 +125,33 @@ const AddNewListItem = (props) => {
                 placeholder={listLength ? '+ Add another item' : '+ Add an item'}
                 autoComplete='off'
                 data-cardid={cardId}
-                value={expandCardInput === cardId ? listTitle: ''}
+                data-expand={ expandListInput === cardId ? true : false }
+                value={ expandListInput === cardId ? listTitle: '' }
                 onChange={(e) => dispatch(setListTitle(e))}
+                onClick={(e) => dispatch(setExpandListInput(e))}
+                onBlur={(e) => {
+                    dispatch(handleAddList({ e, cardId }));
+                    dispatch(closeListInput());
+                }}
                 onKeyDown={(e) => {
                     e.persist();
                     return e.key === 'Enter' ? dispatch(handleAddList({ e, cardId })) : ''
                 }
                 }
-                maxLength={60}
+                maxLength={120}
             />
-            <Submit 
-                type='submit'
-                name='submit'
-                value='+ Add item'
-                onClick={(e) => dispatch(handleAddList({ e, cardId }))}
-            />
+            { expandListInput === cardId ? 
+                <Submit 
+                    type='submit'
+                    name='submit'
+                    value='+ Add item'
+                    onClick={(e) => {
+                        dispatch(handleAddList({ e, cardId }));
+                        dispatch(closeListInput());
+                    }}
+                /> :
+                null
+            }
         </NewContainer>
     );
 }

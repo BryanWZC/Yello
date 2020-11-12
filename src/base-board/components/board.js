@@ -10,12 +10,17 @@ import { cardMenuStateReset } from '../slices/card-menu-slice';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 
+// Internal modules - slices
+import { closeCardInput } from '../slices/board-slice';
+
 // Internal modules - base-background feature
 import * as select from '../selectors/selectors';
 import { Heading } from './Heading';
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 import { CardActions } from './card-actions';
+import { loadingBackground } from './load-background';
+import { useBlurHash } from '../utility/use-blurhash';
 
 // Internal modules - unsplash-image-picker feature
 import * as select2 from '../../unsplash-image-picker/selectors/selectors';
@@ -28,7 +33,7 @@ const Container = styled.div`
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: url(${props => props.background});
+    background: url(${props => props.background}) no-repeat center center fixed;
     background-size: cover;
 `;
 
@@ -42,9 +47,19 @@ const OverflowContainer = styled.div`
     top: 50px;
 `;
 
+const BlurHashCanvas = styled.canvas`
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+`;
+
 export const Board = () => {
     const dispatch = useDispatch();
-
+    const backgroundImage = loadingBackground();
+    const blurHash = useBlurHash();
+    const loadedBackground = useSelector(select.loadedBackground);
+    
     useEffect(() =>{ 
         dispatch(getBoardData('5fac744a04935533f4035e58'));
     }, [dispatch]);
@@ -54,10 +69,11 @@ export const Board = () => {
             <Container
                 onClick={(e) => {
                     e.persist();
-                    if(e.currentTarget.getAttribute('id') === 'card-action-menu') return;
-                    dispatch(cardMenuStateReset());
+                    const id = e.target.getAttribute('id');
+                    if(id !== 'add-card-input') dispatch(closeCardInput());
+                    if(id !== 'card-action-menu') dispatch(cardMenuStateReset());
                 }}
-                background={ useSelector(select.background) }
+                background={ loadedBackground }
             >
                 <Heading />
                 <OverflowContainer>
@@ -71,6 +87,7 @@ export const Board = () => {
                 </OverflowContainer>
                 { useSelector(select.displayItemMenu) ? <ListItemExpand /> : null }
                 { useSelector(select2.backgroundDisplayImageSearch) ? <Background /> : null }
+                <BlurHashCanvas id='blurHash'></BlurHashCanvas>
             </Container>
         </React.Fragment>
     );

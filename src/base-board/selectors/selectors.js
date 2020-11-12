@@ -1,13 +1,21 @@
 // Selections from boardData slice
 export const boardData = (state) => state.boardData.boardData;
 
+export const background = (state) => state.boardData.boardData.background;
+
+export const loadedBackground = (state) => state.boardData.loadedBackground;
+
+export const blurHash = (state) => state.boardData.blurHash;
+
+export const backgroundColor = (state) => state.boardData.backgroundColor
+
 export const cardIds = (state) => state.boardData.boardData.cardIds;
 
 export const cardTitle = (state) => state.boardData.cardTitle;
 
-export const background = (state) => state.boardData.boardData.background;
-
 export const expandCardInput = (state) => state.boardData.expandCardInput;
+
+export const expandListInput = (state) => state.boardData.expandListInput;
 
 export const listTitle = (state) => state.boardData.listTitle;
 

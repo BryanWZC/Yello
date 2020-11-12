@@ -93,8 +93,12 @@ export const boardData = createSlice({
     name: 'board',
     initialState:{
         boardData: {},
+        background: '',
+        loadedBackground: '',
+        blurHash: '',
         cardTitle: '',
-        expandCardInput: '',
+        expandCardInput: false,
+        expandListInput: '',
         listTitle: '',
         renderAddCard: false,
     },
@@ -110,20 +114,41 @@ export const boardData = createSlice({
         },
         setListTitle: {
             reducer: (state, { payload }) => { 
-                const { cardId, value } = payload;
+                const { value } = payload;
                 state.listTitle = value; 
-                state.expandCardInput = cardId;
             },
             prepare: (e) => { 
                 e.persist();
-                const cardId = e.target.getAttribute('data-cardid');
                 return { payload: {
-                    cardId,
                     value: e.target.value,
                     }
                 };
             }
         },
+        setLoadedBackground: {
+            reducer: (state, { payload }) => {
+                state.loadedBackground = payload;
+            },
+            prepare: (url) => {
+                return {
+                    payload: url
+                }
+            }
+        },
+        setExpandCardInput: (state) => { state.expandCardInput = true; },
+        closeCardInput: (state) => { state.expandCardInput = false; },
+        setExpandListInput: {
+            reducer: (state, { payload }) => {
+                state.expandListInput = payload;
+            },
+            prepare: (e) => {
+                const cardId = e.target.getAttribute('data-cardid');
+                return {
+                    payload: cardId,
+                }
+            }
+        },
+        closeListInput: (state) => { state.expandListInput = ''; }
     },
     extraReducers: {
         [getBoardData.fulfilled]: (state, { payload }) => {
@@ -131,8 +156,10 @@ export const boardData = createSlice({
             state.renderAddCard = true;
         },
         [handleAddCard.fulfilled]: (state, { payload }) => {
-            state.boardData.cardIds.push(payload);
-            state.cardTitle = '';
+            if(payload) {
+                state.boardData.cardIds.push(payload);
+                state.cardTitle = '';
+            }
         },
         [handleAddList.fulfilled]: (state, { payload }) => {
             const { cardId, newItem } = payload;
@@ -167,12 +194,14 @@ export const boardData = createSlice({
             state.boardData.cardIds[index].listIds = listIds;
         },
         [changeBackground.fulfilled]: (state, { payload }) => {
-            const { background } = payload;
+            const { background, blurHash } = payload;
             state.boardData.background = background;
+            state.loadedBackground = '';
+            state.blurHash = blurHash;
         },
     }
 });
 
-export const { setCardTitle, setListTitle } = boardData.actions;
+export const { setCardTitle, setListTitle, setLoadedBackground, setExpandCardInput, closeCardInput, setExpandListInput, closeListInput } = boardData.actions;
 
 export { getBoardData, handleAddCard, handleAddList, onDragEnd };

@@ -1,5 +1,8 @@
-import * as select from '../selectors/selectors';
+// External modules
 import { useSelector } from 'react-redux';
+
+// Internal modules
+import * as select from '../selectors/selectors';
 
 /**
  * Gets card data object from state using card id

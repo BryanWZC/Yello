@@ -23,9 +23,10 @@ async function fetchPhotosJson(baseUrl) {
  * Updates board doc with new background image url 
  * @param {String} boardId        - current board id
  * @param {String} backgroundLink - Link for background image from Unsplash
+ * @param {String} blurHash       - blurhash for background image from unsplash
  */
-async function updateBackground(boardId, backgroundLink) {
-    await Board.findByIdAndUpdate(boardId, { background: backgroundLink }, { useFindAndModify: false }).exec();
+async function updateBackground(boardId, backgroundLink, blurHash) {
+    await Board.findByIdAndUpdate(boardId, { background: backgroundLink, blurHash: blurHash }, { useFindAndModify: false }).exec();
 }
 
 module.exports = {

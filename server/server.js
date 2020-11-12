@@ -144,8 +144,8 @@ app.get('/get-unsplash-images', async(req, res) => {
  * Updates 'background' from board doc in db
  */
 app.post('/post-background', async(req, res) => {
-    const { boardId, backgroundLink } = req.body;
-    await unsplash.updateBackground(boardId, backgroundLink);
+    const { boardId, backgroundLink, blurHash } = req.body;
+    await unsplash.updateBackground(boardId, backgroundLink, blurHash);
 })
 
 app.listen(PORT, async () => {
