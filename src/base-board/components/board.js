@@ -15,7 +15,7 @@ import { closeCardInput } from '../slices/board-slice';
 
 // Internal modules - base-background feature
 import * as select from '../selectors/selectors';
-import { Heading } from './Heading';
+import { Heading } from './heading';
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 import { CardActions } from './card-actions';

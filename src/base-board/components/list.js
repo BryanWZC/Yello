@@ -13,7 +13,6 @@ import { handleItemClick } from '../slices/item-menu-slice';
  * Styled components for List
  */
 const ListItemContainer = styled.div`
-    display: flex;
     width: 100%;
     height: auto;
     border-radius: 5px;
@@ -22,13 +21,17 @@ const ListItemContainer = styled.div`
     background: #ffffff;
 `;
 
-const ItemTitle = styled.h4`
+const ItemTitle = styled.p`
+    display: flex;
+    align-items: center;
     width: 100%;
     overflow-wrap: break-word;
     padding: 4px;
     border-radius: 5px;
     min-height: 32px;
     pointer-events: none;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
 `;
 
 /**
@@ -53,6 +56,8 @@ const NewInput = styled.textarea`
     outline: none;
     overflow: none;
     background-color: ${ props => props['data-expand'] ? '#ffffff': 'rgba(0,0,0,.04)' };
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
 `;
 
 const Submit = styled.input`
@@ -61,7 +66,8 @@ const Submit = styled.input`
     border: none;
     padding: 4px;
     outline: none;
-    background-color: #5aac44;
+    color: #fff;
+    background-color: #16C172;
     cursor: pointer;
 `;
 
@@ -130,12 +136,16 @@ const AddNewListItem = (props) => {
                 onChange={(e) => dispatch(setListTitle(e))}
                 onClick={(e) => dispatch(setExpandListInput(e))}
                 onBlur={(e) => {
+                    e.persist();
                     dispatch(handleAddList({ e, cardId }));
                     dispatch(closeListInput());
                 }}
                 onKeyDown={(e) => {
                     e.persist();
-                    return e.key === 'Enter' ? dispatch(handleAddList({ e, cardId })) : ''
+                    if(e.key === 'Enter') {
+                        dispatch(handleAddList({ e, cardId }));
+                        dispatch(setListTitle(''));
+                    }
                 }
                 }
                 maxLength={120}
@@ -144,7 +154,7 @@ const AddNewListItem = (props) => {
                 <Submit 
                     type='submit'
                     name='submit'
-                    value='+ Add item'
+                    value='Add item'
                     onClick={(e) => {
                         dispatch(handleAddList({ e, cardId }));
                         dispatch(closeListInput());

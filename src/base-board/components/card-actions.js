@@ -32,6 +32,7 @@ const Title = styled.p`
     padding-bottom: 4px;
     border-bottom: 1px solid rgba(9,30,66,.13);
     pointer-events: none;
+    font-weight: bold;
 `;
 
 const Delete = styled.button`
@@ -52,10 +53,7 @@ const CardActions = (props) => {
     const offsets = useSelector(select.CardMenuOffsets);
 
     return(
-        <Container 
-            id='card-action-menu'
-            offsets={offsets}
-        >
+        <Container id='card-action-menu' offsets={offsets}>
             <Title>Card actions</Title>
             <Delete id='card-action-menu' onClick={() => dispatch(handleCardDelete())}>
                 Delete
