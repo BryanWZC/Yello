@@ -12,7 +12,7 @@ const handleItemContent = createAsyncThunk(
     'itemMenu/handleItemContent',
     async(e, { getState }) => {
         e.persist();
-        const { boardData } = getState().boardData;
+        const { mode, boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
         const cardIndex = boardData.cardIds.map(card => card._id).indexOf(cardId);
         const card = boardData.cardIds[cardIndex];
@@ -24,7 +24,7 @@ const handleItemContent = createAsyncThunk(
         
         if(content === '') target.innerHTML = "<pre id='item-content-input'></pre>";
         if(item.content !== content) {
-            await updateDBItemContent(item, content);
+            if(mode === 'USER') await updateDBItemContent(item, content);
             return { cardIndex, itemIndex, content };
         }
         return;
@@ -36,12 +36,12 @@ const handleItemContent = createAsyncThunk(
 const handleItemDelete = createAsyncThunk(
     'itemMenu/handleItemDelete',
     async(_, { getState }) => {
-        const { boardData } = getState().boardData;
+        const { mode, boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
         
         const card = boardData.cardIds.filter(card => card._id === cardId)[0];
         const listIds = card.listIds.filter(item => item._id !== itemId);
-        await updateDBItemDelete(cardId, itemId);
+        if(mode === 'USER') await updateDBItemDelete(cardId, itemId);
         return { cardId, listIds };
     }
 )

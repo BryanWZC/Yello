@@ -9,11 +9,3 @@ import axios from 'axios';
 export async function addNewListItem(cardId, listTitle) {
     return (await axios.post('/post-list-item', { cardId, listTitle })).data;
 }
-
-/**
- * Resets all inputs fields when input is submitted
- */
-export function inputFieldReset() {
-    Array.from(document.querySelectorAll("input[type=text]"))
-                .forEach( input => (input.value = ''));
-}

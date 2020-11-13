@@ -46,12 +46,14 @@ const ContentContainer = styled.div`
     width: 100%;
     min-height: ${props => props['data-expand'] ? '104px' : '62px'};
     margin-bottom: ${props => props['data-expand'] ? '8px' : '41px'};;
-    border: ${props => props['data-expand'] ? '1px solid red' : 'none'};
+    border: none;
     background-color: ${props => props['data-expand'] ? '#ffffff': 'rgba(9,30,66,.04)'};
     padding: 4px;
     width: 100%;
     cursor: text;
     overflow-wrap: break-word;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
 
     & > pre:empty::before {
         content: 'Add more details here...';
@@ -64,9 +66,11 @@ const Submit = styled.input`
     height: 25px;
     border: none;
     border-radius: 5px;
-    padding: 4px;
-    background-color: #5aac44;
+    padding: 4px 8px;
+    color: #fff;
+    background-color: #16C172;
     cursor: pointer;
+    outline: none;
 `;
 
 const Delete = styled.input`
@@ -77,8 +81,10 @@ const Delete = styled.input`
     border: none;
     border-radius: 5px;
     padding: 4px;
-    background-color: red;
+    color: #fff;
+    background-color: #DD403A;
     cursor: pointer;
+    outline: none;
 `;
 
 const CloseButton = styled.button`

@@ -1,10 +1,11 @@
 // External modules
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // Internal modules
 import { searchInputOnChange, confirmQuery, fetchImageJson } from '../slices/background-slice';
+import * as select2 from '../selectors/selectors';
 
 const SearchWrapper = styled.div`
     display: flex;
@@ -26,7 +27,8 @@ const SearchButton = styled.button`
     border-radius: 5px;
     border: none;
     padding: 4px;
-    background-color: #5aac44;
+    color: #fff;
+    background-color: #16C172;
     outline: none;
     cursor: pointer;
 `;
@@ -41,10 +43,14 @@ const Search = (props) => {
                 id='unsplash-search'
                 name='unsplash-search'
                 placeholder='Add a background!'
+                value={useSelector(select2.backgroundSearchQuery)}
                 onChange={ (e) => dispatch(searchInputOnChange(e)) }
                 onKeyDown={(e) => {
                     e.persist();
-                    return e.key === 'Enter' ? dispatch(searchInputOnChange({e})) : ''
+                    if(e.key === 'Enter') {
+                        dispatch(confirmQuery());
+                        dispatch(fetchImageJson());
+                    }
                 }
                 }
             />

@@ -30,10 +30,10 @@ const handleCardDelete = createAsyncThunk(
     async(_, { getState }) => {
         try {
             const { cardId } = getState().cardMenuData;
-            const { boardData } = getState().boardData;
+            const { mode, boardData } = getState().boardData;
 
             const newCardIds = newCardIdsOnCardDel(boardData, cardId);
-            await updateDBDeleteCard(boardData._id, cardId);
+            if(mode === 'USER') await updateDBDeleteCard(boardData._id, cardId);
             return newCardIds;
         } catch (err) {
             return err

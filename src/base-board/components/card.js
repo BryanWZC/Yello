@@ -118,6 +118,8 @@ const Input = styled.input`
     outline: none;
     background-color: ${ props => props['data-expand'] ? '#ffffff': 'rgba(0,0,0,.04)' };
     color: #42526e ;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
 `;
 
 const Submit = styled.input`
@@ -127,7 +129,8 @@ const Submit = styled.input`
     border: none;
     padding: 4px;
     outline: none;
-    background-color: #5aac44;
+    background-color: #16C172;
+    color: #ffffff;
     cursor: pointer;
 `;
 

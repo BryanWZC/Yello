@@ -13,6 +13,7 @@ const fetchImageJson = createAsyncThunk(
     'background/fetchPhotosJson',
     async(page, { getState }) => {
         const { confirmedSearchQuery } = getState().backgroundData;
+        if(!confirmedSearchQuery) return;
         return {
             imageJsonData: await fetchJsonData(confirmedSearchQuery, page),
         };
@@ -26,11 +27,11 @@ const changeBackground = createAsyncThunk(
     'background/changeBackground',
     async(index, { getState }) => {
         const { _id: boardId } = getState().boardData.boardData;
-        const { filteredImageJson } = getState().backgroundData;
+        const { mode, filteredImageJson } = getState().backgroundData;
         const imageData = filteredImageJson.results[index];
         const backgroundLink = imageData.full;
         const blurHash = imageData.blur_hash;
-        updateBackground({ boardId, backgroundLink, blurHash });
+        if(mode === 'USER') updateBackground({ boardId, backgroundLink, blurHash });
         return {
             background: backgroundLink,
             blurHash,
@@ -68,7 +69,10 @@ export const backgroundData = createSlice({
             }
         },
         confirmQuery: (state)=> {
+            if(state.searchQuery.trim() === '') return;
+            
             state.confirmedSearchQuery = state.searchQuery;
+            state.page = 1;
         },
         IncreasePageByOne: (state) => { 
             state.page += 1 
@@ -78,14 +82,12 @@ export const backgroundData = createSlice({
         },
         disableImageSearch: (state) => {
             state.displayImageSearch = false;
-            state.searchQuery = '';
-            state.page = 1;
-            state.filteredImageJson = null;
-            state.imageLoaded = false;
         },
     },
     extraReducers: { 
         [fetchImageJson.fulfilled]: (state, { payload }) => {
+            if(!payload) return;
+
             const { imageJsonData } = payload;
             state.filteredImageJson = imageJsonData;
             state.imageLoaded = true;
