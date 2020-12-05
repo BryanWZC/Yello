@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { boardSchema, userSchema, cardSchema, listSchema } = require('./schema');
+const mongoose = require('mongoose')
+const { boardSchema, userSchema, cardSchema, listSchema } = require('./schema')
 
 /**
  * Model of user and board schema

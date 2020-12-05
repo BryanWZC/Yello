@@ -7,5 +7,5 @@ import axios from 'axios';
  * @return {Object}           - new list doc object  
  */
 export async function addNewListItem(cardId, listTitle) {
-    return (await axios.post('/post-list-item', { cardId, listTitle })).data;
+    return (await axios.post('/board/post-list-item', { cardId, listTitle })).data;
 }

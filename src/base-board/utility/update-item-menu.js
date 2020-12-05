@@ -16,7 +16,7 @@ export function checkMenuElement(e) {
  * @param {String} content  - inputted string into textarea
  */
 export async function updateDBItemContent(itemData, content) {
-    await axios.post('/update-item-content', { ...itemData, content });
+    await axios.post('/board/update-item-content', { ...itemData, content });
 }
 
 /**
@@ -25,5 +25,5 @@ export async function updateDBItemContent(itemData, content) {
  * @param {String} itemId - current item id
  */
 export async function updateDBItemDelete(cardId, itemId) {
-    await axios.post('/delete-item', { cardId, itemId }); 
+    await axios.post('/board/delete-item', { cardId, itemId }); 
 }

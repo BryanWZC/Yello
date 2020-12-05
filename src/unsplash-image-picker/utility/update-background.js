@@ -7,5 +7,5 @@ import axios from 'axios';
  * @return {Null} 
  */
 export async function updateBackground({ boardId, backgroundLink }) {
-    await axios.post('/post-background', { boardId, backgroundLink });
+    await axios.post('/board/post-background', { boardId, backgroundLink });
 }

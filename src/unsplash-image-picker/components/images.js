@@ -58,15 +58,14 @@ const Images = (props) => {
     let imageJson = useSelector(select2.backgroundImageJson) || {};
     return(
         <ImagesContainer>
-            {imageJson.results ? 
+            {imageJson.results &&
                 imageJson.results.map((imageData, index) => <Image 
                     thumb={imageData.thumb} 
                     name={imageData.name}
                     userSite={imageData.userSite}
                     index={index}
                     key={imageData.id}
-                />) : 
-                null
+                />) 
             }
         </ImagesContainer>
     );

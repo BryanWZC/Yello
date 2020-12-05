@@ -5,7 +5,12 @@ const nodeExternals = require('webpack-node-externals');
 const frontConfig = {
     target: 'web',
     mode: 'development',
-    entry: './src/index.js',
+    entry: {
+        board: './src/index.js',
+        login: './src/login-index.js',
+        signUp: './src/sign-up-index.js',
+        signUpError: './src/sign-up-error-index.js',
+    },
     module:{
         rules: [
             {
@@ -33,7 +38,7 @@ const frontConfig = {
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/dist/',
-        filename: 'bundle-front.js'
+        filename: '[name].js'
     }
 };
 

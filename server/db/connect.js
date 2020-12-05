@@ -4,8 +4,17 @@ const mongoose = require('mongoose');
 
 async function connect(){
     await mongoose.connect(process.env.MONGO_URI, { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true });
+
+    const db = mongoose.connection;
+    handleConnectionError(db);
 }
 
-module.exports = {
-    connect,
+function handleConnectionError(db) {
+    db.on('error', err => handleDbError(err));
 }
+
+function handleDbError(err) {
+    console.error(err);
+}
+
+module.exports = connect;

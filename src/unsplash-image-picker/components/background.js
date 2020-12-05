@@ -70,7 +70,7 @@ const Background = (props) => {
             <Title>Photos by Unsplash</Title>
             <Search />
             <Images />
-            { selectionImageLoaded ? <ArrowIndex /> : null }
+            { selectionImageLoaded && <ArrowIndex /> }
             <CloseButton 
                 onClick={() => dispatch(disableImageSearch())}
             >
