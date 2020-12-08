@@ -122,7 +122,6 @@ const SignUpErrorPage = (props) => {
                     autoComplete='off'
                     required
                 />
-                <SignUpInput type='password' name='password' autoComplete='off'/>
                 <SignUpSubmit type='submit' value='Submit' />
                 <Desc>Already have an account?<Link href='/'> Sign in</Link></Desc>
             </SignUpForm>

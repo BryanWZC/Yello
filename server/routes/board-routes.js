@@ -1,4 +1,5 @@
 // External modules
+const passport = require('passport');
 const express = require('express');
 const router = express.Router();
 
@@ -10,9 +11,18 @@ const { User, Board, Card, List } = require('../db/model');
 
 // Internal modules - utility 
 const { base } = require('../utility/base-board');
+const { nextTick } = require('process');
+
+router.use((req, res, next) => {
+    if(req.user) return next();
+    res.redirect('/');
+});
 
 router.route('/')
-    .get((req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html')));
+    .get(
+        (req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html'))
+    );
+
 
 router.route('/dist/board.js')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));

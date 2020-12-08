@@ -6,10 +6,12 @@ const frontConfig = {
     target: 'web',
     mode: 'development',
     entry: {
-        board: './src/index.js',
+        board: './src/board-index.js',
+        guestBoard: './src/board-guest-index.js',
         login: './src/login-index.js',
         signUp: './src/sign-up-index.js',
         signUpError: './src/sign-up-error-index.js',
+        userPage: './src/user-page-index.js',
     },
     module:{
         rules: [

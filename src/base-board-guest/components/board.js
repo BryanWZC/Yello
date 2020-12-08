@@ -23,8 +23,8 @@ import { loadingBackground } from './load-background';
 import { useBlurHash } from '../utility/use-blurhash';
 
 // Internal modules - unsplash-image-picker feature
-import * as select2 from '../../unsplash-image-picker/selectors/selectors';
-import { Background } from '../../unsplash-image-picker/components/background';
+import * as select2 from '../../unsplash-image-picker-guest/selectors/selectors';
+import { Background } from '../../unsplash-image-picker-guest/components/background';
 
 // Styles
 const Container = styled.div`

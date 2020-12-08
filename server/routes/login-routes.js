@@ -16,11 +16,11 @@ router.route('/dist/login.js')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'login.js')));
 
 router.route('/login')
-    .post((req, res) => {
+    .post(
         passport.authenticate('local', { failureRedirect: '/' }),
         (req, res) => {
-            res.redirect('/board');
+            res.redirect('/user/' + req.user.username.match(/^.+(?=\@)/));
         }
-    });
+    ); // TODO: figure out why the authentication does not work by going into repl
 
 module.exports = router;

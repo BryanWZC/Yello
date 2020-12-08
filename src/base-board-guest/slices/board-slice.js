@@ -6,12 +6,12 @@ import getAllBoardData from '../utility/get-state';
 import addNewCard from '../utility/add-card';
 import { addNewListItem } from '../utility/add-list';
 import * as dragUtil from '../utility/drag-end';
-import * as guest from '../../base-board-guest/guest-mode';
+import * as guest from '../guest-mode';
 
 // Internal modules - slices
 import { handleCardDelete } from './card-menu-slice';
 import { handleItemContent, handleItemDelete } from './item-menu-slice';
-import { changeBackground } from '../../unsplash-image-picker/slices/background-slice';
+import { changeBackground } from '../../unsplash-image-picker-guest/slices/background-slice';
 
 // Async state functions 
 const getBoardData = createAsyncThunk(

@@ -17,7 +17,9 @@ const PORT = process.env.PORT || 3000;
 // Internal modules - Routes
 const loginRoutes = require('./routes/login-routes');
 const signUpRoutes = require('./routes/sign-up-routes');
+const userRoutes = require('./routes/user-page-routes');
 const boardRoutes = require('./routes/board-routes');
+const guestBoardRoutes = require('./routes/board-guest-routes');
 const unsplashRoutes = require('./routes/unsplash-routes');
 
 // Internal modules - utility
@@ -46,6 +48,8 @@ passport.deserializeUser(User.deserializeUser());
 // Routes
 app.use('/', loginRoutes);
 app.use('/', signUpRoutes);
+app.use('/user', userRoutes)
+app.use('/board', guestBoardRoutes);
 app.use('/board', boardRoutes);
 app.use('/board', unsplashRoutes);
 
@@ -56,11 +60,12 @@ app.use(errorHandler);
 // Listen
 app.listen(PORT, async () => {
     await connect();
-    console.log('Server is running. Listening on port 3000.')
+    console.log('Server is running. Listening on port 3000.');
 });
 
 /**
- * TODO: Configure all routes such that it goes to /boards. Also do not allow outside access to any routes from /board by checking req.user and ensure that req.user provides the id such that it is easy to search for the user's board 
+ * Last Summary: Finished sign-in and sign-up page design. 
+ * TODO1: Finish main user page design and allow to add boards.
  * 
- * Also, customize the front page such that the styles look good. Choose from one of the patterns from the bundle as a choice.
+ * TODO2: Configure all routes such that it goes to /users then to /boards. Also do not allow outside access to any routes from /board by checking req.user and ensure that req.user provides the id such that it is easy to search for the user's board 
  */
