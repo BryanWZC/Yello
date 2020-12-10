@@ -60,9 +60,8 @@ export const Board = () => {
     const blurHash = useBlurHash();
     const loadedBackground = useSelector(select.loadedBackground);
     
-    console.log('hey there')
-    useEffect(() =>{ 
-        dispatch(getBoardData('5fac744a04935533f4035e58'));
+    useEffect(() =>{
+        dispatch(getBoardData());
     }, [dispatch]);
 
     return(

@@ -14,7 +14,7 @@ module.exports = {
             username: String,
             password: String,
             boards: {
-                type: [String],
+                type: [{}],
                 default: [],
             },
         },
@@ -25,13 +25,16 @@ module.exports = {
             title: {
                 type: String,
                 required: true,
-                unique: true,
             },
             cardIds: {
                 type: [String],
                 default: [],
             },
             background: {
+                type: String,
+                default: '',
+            },
+            thumb: {
                 type: String,
                 default: '',
             },

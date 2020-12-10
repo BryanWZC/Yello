@@ -61,6 +61,10 @@ const ContentContainer = styled.div`
     }
 `;
 
+const EditablePre = styled.pre`
+    white-space: pre-wrap;
+`;
+
 const Submit = styled.input`
     margin-bottom: 16px;
     height: 25px;
@@ -136,9 +140,9 @@ const ListItemExpand = (props) => {
                     onBlur={(e) => dispatch(handleItemContent(e))}
                     data-expand={ inputExpand ? true : false }
                 >
-                    <pre id='item-content-input' onClick={() => dispatch(handleTextareaExpand())}>
+                    <EditablePre id='item-content-input' onClick={() => dispatch(handleTextareaExpand())}>
                         {item.content}
-                    </pre>
+                    </EditablePre>
                 </ContentContainer>
                 { inputExpand ? 
                     <Submit

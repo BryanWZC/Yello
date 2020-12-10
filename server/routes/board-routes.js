@@ -18,11 +18,8 @@ router.use((req, res, next) => {
     res.redirect('/');
 });
 
-router.route('/')
-    .get(
-        (req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html'))
-    );
-
+router.route('/:boardId')
+    .get((req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html')));
 
 router.route('/dist/board.js')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));
@@ -32,7 +29,7 @@ router.route('/dist/board.js')
  */
 router.route('/get-board')
     .get(async(req, res) => {
-        const { boardId } = req.query;
+        const { _id: boardId } = req.user.boards[0];
         const boardDoc = await Board.findById(boardId).lean().exec();
         res.json(boardDoc);
     });

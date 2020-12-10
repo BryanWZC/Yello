@@ -16,10 +16,10 @@ import { changeBackground } from '../../unsplash-image-picker/slices/background-
 // Async state functions 
 const getBoardData = createAsyncThunk(
     'board/getData',
-    async(boardId, { getState }) => {
+    async(__, { getState }) => {
         try {
             const { mode } = getState().boardData;
-            return (mode === 'GUEST') ? guest.guestBoard : await getAllBoardData(boardId);
+            return (mode === 'GUEST') ? guest.guestBoard : await getAllBoardData();
         } catch (err) {
             return err;
         }
@@ -107,7 +107,7 @@ export const boardData = createSlice({
         expandListInput: '',
         listTitle: '',
         renderAddCard: false,
-        mode: 'GUEST',
+        mode: 'USER',
     },
     reducers: { 
         setCardTitle: {

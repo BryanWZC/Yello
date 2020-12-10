@@ -26,4 +26,6 @@ router.route('/post-background')
         await unsplash.updateBackground(boardId, backgroundLink, blurHash);
     });
 
+    // ${baseUrl}&client_id=${process.env.UNSPLASH_CLIENT_ID}&orientation=${orientation}
+
 module.exports = router;
