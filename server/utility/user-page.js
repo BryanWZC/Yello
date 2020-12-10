@@ -21,7 +21,8 @@ async function getRandomImageJson() {
  * @param {Object} imageJson  - Object with image data from Unsplash
  */
 async function createNewBoard(boardTitle, imageJson) {
-        const { thumb, full, blur_hash } = imageJson.urls;
+        const { thumb, full } = imageJson.urls;
+        const { blur_hash } = imageJson;
 
         const board = await Board.create({ 
             title: boardTitle, 
@@ -44,8 +45,7 @@ async function createNewBoard(boardTitle, imageJson) {
  * @param {Object} newBoard  - new board object
  */
 async function updateUser(_id, newBoards) {
-    console.log(newBoards)
-    await User.findByIdAndUpdate(_id, { boards: newBoards });
+    await User.findByIdAndUpdate(_id, { boards: newBoards }, { useFindAndModify: false });
 }
 
 module.exports = {

@@ -16,5 +16,5 @@ export function newCardIdsOnCardDel(boardData, cardId) {
  * @param {String} cardId  - current card id
  */
 export async function updateDBDeleteCard(boardId, cardId) {
-    await axios.post('delete-card', { boardId, cardId });
+    await axios.post('/board/delete/card', { boardId, cardId });
 }

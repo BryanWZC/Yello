@@ -27,11 +27,12 @@ const changeBackground = createAsyncThunk(
     'background/changeBackground',
     async(index, { getState }) => {
         const { _id: boardId } = getState().boardData.boardData;
-        const { mode, filteredImageJson } = getState().backgroundData;
+        const { mode } = getState().boardData;
+        const { filteredImageJson } = getState().backgroundData;
+        
         const imageData = filteredImageJson.results[index];
-        const backgroundLink = imageData.full;
-        const blurHash = imageData.blur_hash;
-        if(mode === 'USER') updateBackground({ boardId, backgroundLink, blurHash });
+        const { full: backgroundLink, thumb, blur_hash: blurHash } = imageData
+        if(mode === 'USER') updateBackground({ boardId, backgroundLink, thumb, blurHash });
         return {
             background: backgroundLink,
             blurHash,

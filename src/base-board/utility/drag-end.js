@@ -33,7 +33,7 @@ export function getUpdatedCardIds(cardIds, source, destination) {
  * @param {Array} newCardIds   - updated cardId array 
  */
 export async function updateDBCardOrder(boardId, newCardIds) {
-    await axios.post('/board/update-card-order', { boardId , newCardIds });
+    await axios.post('/board/update/card-order', { boardId , newCardIds });
 }
 
 /**
@@ -76,5 +76,5 @@ export function newCardIdsOnListDrag(cardIds, source, destination) {
  * @param {Object} endCard   - ending card object to update on db 
  */
 export async function updateDBListOrder(startCard, endCard) {
-    await axios.post('/board/update-list-order', { startCard, endCard });
+    await axios.post('/board/update/list-order', { startCard, endCard });
 }

@@ -9,7 +9,7 @@ const { unsplash } = require('../utility/unsplash-image');
 /**
  * Make a query to Unsplash API for images
  */
-router.route('/get-unsplash-images')
+router.route('/get/unsplash-images')
     .get(async(req, res) => {
         const { query, page } = req.query;
         const baseUrl = `https://api.unsplash.com/search/photos?page=${page}&query=${query}`;
@@ -20,12 +20,12 @@ router.route('/get-unsplash-images')
 /**
  * Updates 'background' from board doc in db
  */
-router.route('/post-background')
+router.route('/post/background')
     .post(async(req, res) => {
-        const { boardId, backgroundLink, blurHash } = req.body;
-        await unsplash.updateBackground(boardId, backgroundLink, blurHash);
+        const { boardId, backgroundLink, thumb, blurHash } = req.body;
+        const user = req.user;
+        await unsplash.updateBackground({ user, boardId, backgroundLink, thumb, blurHash });
+        res.end();
     });
-
-    // ${baseUrl}&client_id=${process.env.UNSPLASH_CLIENT_ID}&orientation=${orientation}
 
 module.exports = router;

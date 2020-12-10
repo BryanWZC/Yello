@@ -37,7 +37,7 @@ router.route('/post/addBoard')
         req.session.passport.user.boards = newBoards;
         await updateUser(_id, newBoards);
 
-        res.redirect('/board/board._id');
+        res.redirect('/board/' + _id);
     })
 
 router.route('/dist/userPage.js')
@@ -45,20 +45,14 @@ router.route('/dist/userPage.js')
 
 
 module.exports = router;
+
 /**
  * TODO:
- * 1. Ensure that req.user has the 'boards' property within it. [CHECKED]
- * 2. Ensure that whenever a new board can be added to the array for the user document it has the title, _id, unsplash mini icon and blurhash. [CHECKED]
- *  2.1. First, work on the visuals of the page. [CHECKED]
- *  2.2. Work on '/add-board' route from add-board-overlay to add a new board and redirect to new board page while updating db. [CHECKED]
- *  2.3 Debug errors on the user mode for the boards
- * 
- * 3. Ensure that whenever you first visit a page, the order of that board within the board property for the user document becomes first.
- * Look into adding it within the useEffect of board.js so that it only occurs once.
- * 4. Ensure that when you change the background image that you will update the user document with the boardid with the updated blurhash string 
- * so that it displays your current background image as a thumbmail 
- * 5. Beautify the user page with animations for when there are no boards...look into designs for it.
- * 6. Fix up blurhash for the board.
+ * 5. Improve blurhash to work on start up.
+ *     5.1 Allow main boards page to render the board images and titles correctly 
+ *     5.2 Allow the board titles, card titles and list titles to be editable 
+ * 6. Beautify the user page with animations for when there are no boards...look into designs for it.
  * 7. Enable email verification with the whoisxmlapi
+ *     7.1 Send a verified email to users upon sign up (maybe)
  * 8. Include helmet.js for security purposes
  */

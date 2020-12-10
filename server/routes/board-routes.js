@@ -22,22 +22,22 @@ router.route('/:boardId')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html')));
 
 router.route('/dist/board.js')
-    .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));
+.get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));
 
 /**
  * Get board data from db given a boardId and returns it
  */
-router.route('/get-board')
-    .get(async(req, res) => {
-        const { _id: boardId } = req.user.boards[0];
-        const boardDoc = await Board.findById(boardId).lean().exec();
-        res.json(boardDoc);
-    });
+router.route('/get/board')
+.get(async(req, res) => {
+    const { _id: boardId } = req.user.boards[0];
+    const boardDoc = await Board.findById(boardId).lean().exec();
+    res.json(boardDoc);
+});
 
 /**
  * Get card data from db given cardId and returns it
  */
-router.route('/get-card')
+router.route('/get/card')
     .get(async(req, res) => {
         const { cardId } = req.query;
         const card = await Card.findById(cardId).lean().exec();
@@ -47,7 +47,7 @@ router.route('/get-card')
 /**
  * Get list id and title only from db given listId and return it
  */
-router.route('/get-item-title-only')
+router.route('/get/item-title-only')
     .get(async(req, res) => {
         const { listId } = req.query;
         const list = await List.findById(listId).lean().exec();
@@ -58,7 +58,7 @@ router.route('/get-item-title-only')
 /**
  * Get list data from db given listId and returns it
  */
-router.route('/get-item')
+router.route('/get/item')
     .get(async(req, res) => {
         const { listId } = req.query;
         const list = await List.findById(listId).lean().exec();
@@ -68,7 +68,7 @@ router.route('/get-item')
 /**
  * Adds a card element to database when submitted.
  */
-router.route('/post-card')
+router.route('/post/card')
     .post(async(req, res) => {
         const { boardId, cardTitle } = req.body;
         const newCard = await base.addNewCard({ boardId, cardTitle });
@@ -78,7 +78,7 @@ router.route('/post-card')
 /**
  * Adds an item element to database when submitted.
  */
-router.route('/post-list-item')
+router.route('/post/list-item')
     .post(async(req, res) => {
         const { cardId, listTitle } = req.body;
         const newListItem = await base.addNewListItem({ cardId, listTitle });
@@ -88,7 +88,7 @@ router.route('/post-list-item')
 /**
  * Updates card order within db after a drag occurs
  */
-router.route('/update-card-order')
+router.route('/update/card-order')
     .post(async(req, res) => {
         const { boardId, newCardIds } = req.body;
         await base.updateCardOrder({ boardId, newCardIds });
@@ -98,7 +98,7 @@ router.route('/update-card-order')
 /**
  * Updates list order from drag and drop
  */
-router.route('/update-list-order')
+router.route('/update/list-order')
     .post(async(req, res) => {
         const { startCard, endCard } = req.body;
         await base.updateListOrder({ startCard, endCard });
@@ -108,7 +108,7 @@ router.route('/update-list-order')
 /**
  * Updates list item content on db
  */
-router.route('/update-item-content')
+router.route('/update/item-content')
     .post(async(req, res) => {
         const { _id, content } = req.body;
         await base.updateItemContent({ _id, content });
@@ -118,7 +118,7 @@ router.route('/update-item-content')
 /**
  * Deletes an item from item doc and card itemIds list within its doc
  */
-router.route('/delete-item')
+router.route('/delete/item')
     .post(async(req, res) => {
         const { cardId, itemId } = req.body;
         await base.deleteItem({ cardId, itemId });
@@ -128,9 +128,10 @@ router.route('/delete-item')
 /**
  * Deletes a card from the card doc and board cardIds list within its doc
  */
-router.route('/delete-card')
+router.route('/delete/card')
     .post(async(req, res) => {
         const { boardId, cardId } = req.body;
+        console.log(boardId, cardId)
         await base.deleteCard({ boardId, cardId });
         res.end();
     });

@@ -67,7 +67,7 @@ async function deleteItem({ cardId, itemId }){
 
 /**
  * Deletes a card from db and updates board cardIds array
- * @param {Objetc} { boardId, cardId } - Object containing board and card id 
+ * @param {Object} { boardId, cardId } - Object containing board and card id 
  */
 async function deleteCard({ boardId, cardId }) {
     await Card.findByIdAndDelete(cardId, { useFindAndModify: false });

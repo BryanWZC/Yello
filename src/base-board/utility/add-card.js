@@ -7,5 +7,5 @@ import axios from 'axios';
  * @return {Object}           - New card doc Object 
  */
 export default async function addNewCard(boardId, cardTitle) {
-    return (await axios.post('/board/post-card', { boardId, cardTitle })).data;
+    return (await axios.post('/board/post/card', { boardId, cardTitle })).data;
 }
