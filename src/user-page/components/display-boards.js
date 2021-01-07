@@ -27,16 +27,11 @@ const BoardContainer = styled.div`
     &:hover {
         width: 220px;
         height: 110px;
-        margin-right: 40px;
-        margin-bottom: 40px;
+        margin: -5px 40px 40px -10px;
     }
 
     &:nth-child(3n + 3) {
         margin-right: 0;
-
-        &:hover {
-            margin-left: -10px;
-        }
     }
 `;
 
