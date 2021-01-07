@@ -10,7 +10,7 @@ import { boardData } from '../../base-board-guest/slices/board-slice';
  * Fetch initial unsplash json data featuring first 10 images from page 1 
  */
 const fetchImageJson = createAsyncThunk(
-    'background/fetchPhotosJson',
+    'background/fetchImageJson',
     async(page, { getState }) => {
         const { confirmedSearchQuery } = getState().backgroundData;
         if(!confirmedSearchQuery) return;
@@ -27,11 +27,12 @@ const changeBackground = createAsyncThunk(
     'background/changeBackground',
     async(index, { getState }) => {
         const { _id: boardId } = getState().boardData.boardData;
-        const { mode, filteredImageJson } = getState().backgroundData;
+        const { mode } = getState().boardData;
+        const { filteredImageJson } = getState().backgroundData;
+        
         const imageData = filteredImageJson.results[index];
-        const backgroundLink = imageData.full;
-        const blurHash = imageData.blur_hash;
-        if(mode === 'USER') updateBackground({ boardId, backgroundLink, blurHash });
+        const { full: backgroundLink, thumb, blur_hash: blurHash } = imageData
+        if(mode === 'USER') updateBackground({ boardId, backgroundLink, thumb, blurHash });
         return {
             background: backgroundLink,
             blurHash,

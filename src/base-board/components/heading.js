@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 // Internal modules 
 import * as select from '../selectors/selectors';
 import { enableImageSearch } from '../../unsplash-image-picker/slices/background-slice';
+import axios from 'axios';
+import { returnHome } from '../utility/general';
 
 const Container = styled.div`
     display: flex;
@@ -18,25 +20,38 @@ const Container = styled.div`
 `;
 
 const LeftContainer = styled.div`
+    width: 30%;
     display: flex;
+    justify-content: flex-start;
+    white-space: nowrap;
 `;
 
 const BoardTitle = styled.h3`
-    align-text: center;
     color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const MiddleContainer = styled.div`
-
+    width: 30%;
+    display: flex;
+    justify-content: center;
 `;
 
 const RightContainer = styled.div`
-
+    width: 30%;
+    display: flex;
+    justify-content: flex-end;
 `;
 
 const Title = styled.h2`
     align-text: center;
     color: #fff;
+    cursor: pointer;
+
+    &:hover {
+        color: #CED1DA;
+    }
 `;
 
 const BackgroundButton = styled.button`
@@ -68,7 +83,7 @@ const Heading = (props) => {
                 <BoardTitle>Board: {boardTitle}</BoardTitle>
             </LeftContainer>
             <MiddleContainer>
-                <Title>Yello</Title>
+                <Title onClick={returnHome}>Yello</Title>
             </MiddleContainer>
             <RightContainer>
                 <BackgroundButton onClick={() => dispatch(enableImageSearch())}>

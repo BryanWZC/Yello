@@ -21,6 +21,6 @@ router.route('/login')
         (req, res) => {
             res.redirect('/user/' + req.user.username.match(/^.+(?=\@)/));
         }
-    ); // TODO: figure out why the authentication does not work by going into repl
+    );
 
 module.exports = router;

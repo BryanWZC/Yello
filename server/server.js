@@ -50,8 +50,8 @@ app.use('/', loginRoutes);
 app.use('/', signUpRoutes);
 app.use('/user', userRoutes)
 app.use('/board', guestBoardRoutes);
-app.use('/board', boardRoutes);
 app.use('/board', unsplashRoutes);
+app.use('/board', boardRoutes);
 
 // Error handlers
 app.use((req, res, next) => catchNotFoundError(req, res, next)); 

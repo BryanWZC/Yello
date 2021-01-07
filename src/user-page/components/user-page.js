@@ -6,6 +6,7 @@ import axios from 'axios';
 // Internal modules
 import AddBoardOverlay from './add-board-overlay';
 import DisplayBoards from './display-boards';
+import { returnHome } from '../utility/general';
 
 const UserContainer = styled.div`
     width: 100%;
@@ -28,10 +29,15 @@ const HeaderContainer = styled.div`
 const Heading = styled.h1`
     font-size: 36px;
     color: #FFD400;
+    cursor: pointer;
+
+    &:hover {
+        color: #FFE047;
+    }
 `;
 
 const DataContainer = styled.div`
-    width: 700px;
+    width: 710px;
     height: 100% - 40px;
     display: flex;
     flex-direction: column;
@@ -48,6 +54,7 @@ const AddBoardButton = styled.button`
     border: none;
     border-radius: 4px;
     padding: 0 15px;
+    margin-bottom: 48px;
     background-color: #FFD400;
     outline: none;
     cursor: pointer;
@@ -75,7 +82,7 @@ const UserPage = (props) => {
         <UserContainer>
             { displayAddBoard && <AddBoardOverlay handleOverlayClick={ handleOverlayClick } />}
             <HeaderContainer>
-                <Heading>Yello</Heading>
+                <Heading onClick={returnHome}>Yello</Heading>
             </HeaderContainer>
             <DataContainer>
                 <BoardsTitle>Your Boards</BoardsTitle>

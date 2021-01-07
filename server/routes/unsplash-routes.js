@@ -22,9 +22,10 @@ router.route('/get/unsplash-images')
  */
 router.route('/post/background')
     .post(async(req, res) => {
-        const { boardId, backgroundLink, thumb, blurHash } = req.body;
+        const { title, boardId, backgroundLink, thumb, blurHash } = req.body;
         const user = req.user;
-        await unsplash.updateBackground({ user, boardId, backgroundLink, thumb, blurHash });
+        req.session.passport.boards = await unsplash.updateBackground({ title, user, boardId, backgroundLink, thumb, blurHash });
+        console.log(req.session.passport)
         res.end();
     });
 

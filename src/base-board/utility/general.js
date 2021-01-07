@@ -1,5 +1,6 @@
 // External modules
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 // Internal modules
 import * as select from '../selectors/selectors';
@@ -23,3 +24,8 @@ export const getItemFromId = (cardId, itemId) => {
     const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
     return card.listIds[itemIndex];
 }
+
+/**
+ * Returns to main user page
+ */
+export const returnHome = async () => window.location.href = ((await axios.get('/board/return/home')).data.url);

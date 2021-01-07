@@ -7,7 +7,8 @@ import axios from 'axios';
  * @param {String} page  - page of photos displayed
  */
 export async function fetchJsonData(query, page = 1) {
-    const jsonData = (await axios.get(`/board/get-unsplash-images?query=${query}&page=${page}`)).data;
+    const jsonData = (await axios.get(`/board/get/unsplash-images?query=${query}&page=${page}`)).data;
+    console.log(jsonData)
     return filterJsonData(jsonData);
 };
 

@@ -10,6 +10,7 @@ const OverlayContainer = styled.div`
     align-items: center;
     position: absolute;
     background-color: rgba(0,0,0,.64);
+    z-index: 100;
 `;
 
 const AddBoardContainer = styled.div`

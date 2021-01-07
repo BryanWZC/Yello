@@ -6,9 +6,10 @@ import axios from 'axios';
  * @return {Object}         - board doc object
  */
 async function getBoard() {
-    const { _id, cardIds, title, background } = (await axios('/board/get/board')).data
-    console.log({ _id, cardIds, title, background })
-    return { _id, cardIds, title, background };
+    const location = window.location.href;
+    const boardId = location.match(/[\w\d]+$/)[0];
+    const { _id, cardIds, title, background, blurHash } = (await axios(`/board/get/board?boardId=${boardId}`)).data;
+    return { _id, cardIds, title, background, blurHash };
 };
 
 /**

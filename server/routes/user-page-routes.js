@@ -19,7 +19,8 @@ router.route('/:user')
 
 router.route('/get/boardData')
     .get((req, res) => {
-        const boards = req.user ? req.user.boards : null;
+        const boards = req.session.passport.boards || req.user.boards;
+        req.session.passport.boards = boards;
         if(!boards) throw new Error('Missing boards');
         res.json(boards);
     });
@@ -27,17 +28,32 @@ router.route('/get/boardData')
 router.route('/post/addBoard')
     .post(async(req, res) => {
         const { boardTitle } = req.body; 
-        const { _id, boards } = req.user;
+        const { _id } = req.user;
+        const { boards } = req.session.passport;
         
         const imageJson = await getRandomImageJson();
 
         const newBoard = await createNewBoard(boardTitle, imageJson);
         const newBoards = [ newBoard, ...boards ];
 
-        req.session.passport.user.boards = newBoards;
+        req.session.passport.boards = newBoards;
         await updateUser(_id, newBoards);
+        res.redirect('/board/' + newBoard._id);
+    });
 
-        res.redirect('/board/' + _id);
+router.route('/post/recentBoard')
+    .post(async (req, res) => {
+        const { boardId } = req.body;
+        const { _id } = req.user;
+        const { boards } = req.session.passport;
+        const newBoards = [];
+
+        const currentBoards = boards;
+        currentBoards.map(board => board._id === boardId ? newBoards.unshift(board) : newBoards.push(board));
+        console.log(boards)
+        req.session.passport.boards = newBoards;
+        await updateUser(_id, newBoards);
+        res.end();
     })
 
 router.route('/dist/userPage.js')
@@ -48,9 +64,7 @@ module.exports = router;
 
 /**
  * TODO:
- * 5. Improve blurhash to work on start up.
- *     5.1 Allow main boards page to render the board images and titles correctly 
- *     5.2 Allow the board titles, card titles and list titles to be editable 
+ *     5.2 Allow the board titles, card titles and list titles to be editable by adding a board actions, card actions and list actions to it.
  * 6. Beautify the user page with animations for when there are no boards...look into designs for it.
  * 7. Enable email verification with the whoisxmlapi
  *     7.1 Send a verified email to users upon sign up (maybe)

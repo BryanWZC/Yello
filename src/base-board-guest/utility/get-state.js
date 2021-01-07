@@ -5,9 +5,9 @@ import axios from 'axios';
  * @param  {String} boardId - board id 
  * @return {Object}         - board doc object
  */
-async function getBoard(boardId) {
-    const { _id, cardIds, title, background } = (await axios('/board/get-board?boardId=' + boardId)).data
-    return { _id, cardIds, title, background };
+async function getBoard() {
+    const { _id, cardIds, title, background, blurHash } = (await axios('/board/get/board')).data
+    return { _id, cardIds, title, background, blurHash };
 };
 
 /**
@@ -16,7 +16,7 @@ async function getBoard(boardId) {
  * @return {Object}        - card doc object 
  */
 async function getCard(cardId) {
-    const { _id, listIds, title } = (await axios('/board/get-card?cardId=' + cardId)).data;
+    const { _id, listIds, title } = (await axios('/board/get/card?cardId=' + cardId)).data;
     return { _id, listIds, title };
 }
 
@@ -26,7 +26,7 @@ async function getCard(cardId) {
  * @return {Object}        - list doc object
  */
 async function getList(listId) {
-    const { _id, content, title } = (await axios('/board/get-item?listId=' + listId)).data;
+    const { _id, content, title } = (await axios('/board/get/item?listId=' + listId)).data;
     return { _id, content, title };
 }
 
@@ -43,12 +43,11 @@ async function getListData(cardObj) {
 
 /**
  * Make a call to server to get board data nested with card and list data
- * @param  {String} boardId - board id 
  * @return {Object}         - nested board data object
  */
-export default async function getAllBoardData(boardId) {
-    const board = await getBoard(boardId);
-    const cardIds = await Promise.all(board.cardIds.map(async (cardId) => {
+export default async function getAllBoardData() {
+    const board = await getBoard();
+    const cardIds = await Promise.all(board.cardIds.map(async(cardId) => {
         const card = await getCard(cardId);
         const listIds = await getListData(card);
         return { ...card, listIds };

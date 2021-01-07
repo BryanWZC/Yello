@@ -16,10 +16,11 @@ import { changeBackground } from '../../unsplash-image-picker-guest/slices/backg
 // Async state functions 
 const getBoardData = createAsyncThunk(
     'board/getData',
-    async(boardId, { getState }) => {
+    async(__, { getState }) => {
         try {
             const { mode } = getState().boardData;
-            return (mode === 'GUEST') ? guest.guestBoard : await getAllBoardData(boardId);
+            console.log(mode)
+            return (mode === 'GUEST') ? guest.guestBoard : await getAllBoardData();
         } catch (err) {
             return err;
         }
@@ -100,7 +101,7 @@ export const boardData = createSlice({
     initialState:{
         boardData: {},
         background: '',
-        loadedBackground: '',
+        loadedBackground: false,
         blurHash: '',
         cardTitle: '',
         expandCardInput: false,
@@ -137,16 +138,7 @@ export const boardData = createSlice({
                 };
             }
         },
-        setLoadedBackground: {
-            reducer: (state, { payload }) => {
-                state.loadedBackground = payload;
-            },
-            prepare: (url) => {
-                return {
-                    payload: url
-                }
-            }
-        },
+        setLoadedBackground: (state) => { state.loadedBackground = true; },
         setExpandCardInput: (state) => { state.expandCardInput = true; },
         closeCardInput: (state) => { state.expandCardInput = false; },
         setExpandListInput: {
@@ -164,7 +156,10 @@ export const boardData = createSlice({
     },
     extraReducers: {
         [getBoardData.fulfilled]: (state, { payload }) => {
-            state.boardData = payload;
+            const { _id, cardIds, title, background, blurHash } = payload;
+            state.boardData = { _id, cardIds, title };
+            state.background = background;
+            state.blurHash = blurHash;
             state.renderAddCard = true;
         },
         [handleAddCard.fulfilled]: (state, { payload }) => {
@@ -208,9 +203,9 @@ export const boardData = createSlice({
         },
         [changeBackground.fulfilled]: (state, { payload }) => {
             const { background, blurHash } = payload;
-            state.boardData.background = background;
-            state.loadedBackground = '';
+            state.background = background;
             state.blurHash = blurHash;
+            state.loadedBackground = false;
         },
     }
 });

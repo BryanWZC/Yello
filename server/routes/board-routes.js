@@ -11,7 +11,6 @@ const { User, Board, Card, List } = require('../db/model');
 
 // Internal modules - utility 
 const { base } = require('../utility/base-board');
-const { nextTick } = require('process');
 
 router.use((req, res, next) => {
     if(req.user) return next();
@@ -22,16 +21,28 @@ router.route('/:boardId')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../public', 'board.html')));
 
 router.route('/dist/board.js')
-.get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));
+    .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'board.js')));
+
+router.route('/return/home')
+    .get((req, res) => {
+        res.json({url: '/user/' + req.user.username.match(/^.+(?=\@)/)});
+    });
 
 /**
  * Get board data from db given a boardId and returns it
  */
 router.route('/get/board')
 .get(async(req, res) => {
-    const { _id: boardId } = req.user.boards[0];
-    const boardDoc = await Board.findById(boardId).lean().exec();
-    res.json(boardDoc);
+    try {
+        const boards = req.user.boards.map(obj => obj._id);
+        const { boardId } = req.query;
+        console.log(boards, boardId)
+        if(!boards.includes(boardId)) throw new Error('No Board for user found!');
+        const boardDoc = await Board.findById(boardId).lean().exec();
+        res.json(boardDoc);
+    } catch (error) {
+        res.redirect('/user/' + req.user.username.match(/^.+(?=\@)/));
+    }
 });
 
 /**

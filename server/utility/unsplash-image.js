@@ -23,10 +23,10 @@ async function fetchPhotosJson(baseUrl) {
  * Updates board and user doc with new background image url 
  * @param {Object} props - object containing data to update background image
  */
-async function updateBackground({ user, boardId, backgroundLink, thumb, blurHash }) {
-    const props = { user, boardId, backgroundLink, thumb, blurHash };
-    await updateUserDocBoard(props);
+async function updateBackground({ title, user, boardId, backgroundLink, thumb, blurHash }) {
+    const props = { title, user, boardId, backgroundLink, thumb, blurHash };
     await updateBoardDoc(props);
+    return (await updateUserDocBoard(props)).boards;
 }
 
 /**
@@ -34,12 +34,12 @@ async function updateBackground({ user, boardId, backgroundLink, thumb, blurHash
  * @param {Object} props - object containing data to update background image
  */
 async function updateUserDocBoard(props) {
-    const { user, backgroundLink, thumb, blurHash } = props;
+    const { title, user, backgroundLink, thumb, blurHash } = props;
     const { _id: userId, boards } = user;
-    const currentBoard = { ...boards[0], background: backgroundLink, thumb: thumb,  blurHash: blurHash};
-    const currentBoards = [ currentBoard, boards.slice(1) ];
+    const currentBoard = { ...boards[0], background: backgroundLink, thumb: thumb,  blurHash: blurHash, title: title };
+    const currentBoards = [ currentBoard, ...boards.slice(1) ];
 
-    await User.findByIdAndUpdate(userId, { boards: currentBoards }, { useFindAndModify: false });
+    return await User.findByIdAndUpdate(userId, { boards: currentBoards }, { useFindAndModify: false, new: true });
 }
 
 /**
@@ -47,8 +47,8 @@ async function updateUserDocBoard(props) {
  * @param {Object} props - object containing data to update background image
  */
 async function updateBoardDoc(props) {
-    const { boardId, backgroundLink, thumb, blurHash } = props;
-    await Board.findByIdAndUpdate(boardId, { background: backgroundLink, blurHash: blurHash, thumb: thumb }, { useFindAndModify: false });
+    const { title, boardId, backgroundLink, thumb, blurHash } = props;
+    await Board.findByIdAndUpdate(boardId, { background: backgroundLink, blurHash: blurHash, thumb: thumb, title: title }, { useFindAndModify: false });
 }
 
 module.exports = {

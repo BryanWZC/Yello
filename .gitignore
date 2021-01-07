@@ -6,3 +6,5 @@ progess_tracker
 
 # Files
 .env
+jest.config.js
+prettier.config.js

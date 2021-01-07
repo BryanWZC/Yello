@@ -19,8 +19,7 @@ import { Heading } from './heading';
 import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 import { CardActions } from './card-actions';
-import { loadingBackground } from './load-background';
-import { useBlurHash } from '../utility/use-blurhash';
+import BackgroundImage from './background-image';
 
 // Internal modules - unsplash-image-picker feature
 import * as select2 from '../../unsplash-image-picker-guest/selectors/selectors';
@@ -56,13 +55,9 @@ const BlurHashCanvas = styled.canvas`
 
 export const Board = () => {
     const dispatch = useDispatch();
-    const backgroundImage = loadingBackground();
-    const blurHash = useBlurHash();
-    const loadedBackground = useSelector(select.loadedBackground);
     
-    console.log('hey there')
-    useEffect(() =>{ 
-        dispatch(getBoardData('5fac744a04935533f4035e58'));
+    useEffect(() =>{
+        dispatch(getBoardData());
     }, [dispatch]);
 
     return(
@@ -74,8 +69,8 @@ export const Board = () => {
                     if(id !== 'add-card-input') dispatch(closeCardInput());
                     if(id !== 'card-action-menu') dispatch(cardMenuStateReset());
                 }}
-                background={ loadedBackground }
             >
+                <BackgroundImage />
                 <Heading />
                 <OverflowContainer>
                     <DragDropContext onDragEnd={(res) => dispatch(onDragEnd(res))}>

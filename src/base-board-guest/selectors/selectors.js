@@ -1,7 +1,7 @@
 // Selections from boardData slice
 export const boardData = (state) => state.boardData.boardData;
 
-export const background = (state) => state.boardData.boardData.background;
+export const background = (state) => state.boardData.background;
 
 export const loadedBackground = (state) => state.boardData.loadedBackground;
 

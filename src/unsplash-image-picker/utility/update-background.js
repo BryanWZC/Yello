@@ -6,6 +6,6 @@ import axios from 'axios';
  * @param  {Object} { boardId, backgroundLink } - Object containing current board id and background link for update
  * @return {Null} 
  */
-export async function updateBackground({ boardId, backgroundLink, thumb, blurHash }) {
-    await axios.post('/board/post/background', { boardId, backgroundLink, thumb, blurHash });
+export async function updateBackground({ title, boardId, backgroundLink, thumb, blurHash }) {
+    await axios.post('/board/post/background', { title, boardId, backgroundLink, thumb, blurHash });
 }
