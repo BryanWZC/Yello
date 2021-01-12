@@ -16,23 +16,85 @@ const ActionMenuContainer = styled.div`
     align-items: center;
     position: absolute;
     border-radius: 50%;
-    z-index: 3;
+    z-index: 5;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.35);
+        background-color: ${props => props.active ? 'inherit' : 'rgba(255, 255, 255, 0.35)'};
     }
 `;
 
 const Dots = styled.img``;
 
+const Menu = styled.div`
+    position: absolute;
+    width: 160px;
+    height: 100px;
+    left: 0px;
+    top: 24px;
+    display: ${props => props.active === props.id ? 'flex' : 'none'};
+    flex-direction: column;
+    border: none;
+    border-radius: 5px;
+    padding: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px -4px rgba(9,30,66,.25), 0 0 0 1px rgba(9,30,66,.08);
+    z-index: 6;
+
+    &:focus {
+        outline: none;
+    }
+`;
+
+const Title = styled.p`
+    text-align: center;
+    width: 100%;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(9,30,66,.13);
+    pointer-events: none;
+    font-weight: bold;
+`;
+
+const Action = styled.button`
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    padding: 4px 0;
+    outline: none;
+
+    &:hover {
+        background: rgba(0,0,0,.04);
+    }
+`;
+
 const ActionMenu = (props) => {
+    const { handleSetActive, active, id } = props;
     const [hover, setHover] = useState(false);
 
     return(
-        <ActionMenuContainer onMouseOver={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-            {hover ? 
-                <Dots src={threeDotsYellow} alt="ellipsis"/> :
-                <Dots src={threeDots} alt="ellipsis"/>}
+        <ActionMenuContainer 
+            onMouseOver={() => setHover(true)} 
+            onMouseLeave={() => setHover(false)}
+            active={active}
+        >
+            { 
+                hover && !active ? 
+                <Dots src={threeDotsYellow} 
+                    alt="ellipsis"
+                    onClick={handleSetActive}
+                    data-id={id}
+                    active={active}
+                /> :
+                <Dots src={threeDots} alt="ellipsis"/> 
+            }
+            <Menu 
+                active={active}
+                id={id}
+            >
+                <Title>Board Actions</Title>
+                <Action>Rename</Action>
+                <Action>Delete</Action>
+            </Menu>
         </ActionMenuContainer>
     );
 }

@@ -23,12 +23,12 @@ const BoardContainer = styled.div`
     margin-bottom: 50px;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    cursor: ${props => props.active ? 'auto' : 'pointer'};
 
     &:hover {
-        width: 220px;
-        height: 110px;
-        margin: -5px 40px 40px -10px;
+        width: ${props => props.active ? '200px' : '220px'};
+        height: ${props => props.active ? '100px' : '110px'};
+        margin: ${props => props.active ? '0 50px 50px 0' : '-5px 40px 40px -10px;'};
     }
 
     &:nth-child(3n + 3) {
@@ -76,21 +76,23 @@ const Clickable = styled.div`
 `;
 
 const DisplayBoards = (props) => {
-    const { boardData } = props;
-    console.log(boardData)
+    const { boardData, handleSetActive, active } = props;
     return(
         <BoardsContainer>
-            { boardData.map(board =>  <DisplaySingleBoard board={board} key={board._id}/> ) }
+            { boardData.map(board =>  <DisplaySingleBoard board={board} key={board._id} handleSetActive={handleSetActive} active={active}/> ) }
         </BoardsContainer>
     )
 }
 
 const DisplaySingleBoard = (props) => {
+    const { handleSetActive, active } = props;
     const [loadedBackground, setLoadedBackground] = useState(false);
     const styleDisplay = !loadedBackground ? { display: 'none' } : {}
     const { _id, title, thumb, blurHash } = props.board;
     return(
-        <BoardContainer>
+        <BoardContainer
+            active={active}
+        >
             {!loadedBackground && 
                 blurHash &&
                 <Blurhash
@@ -109,7 +111,7 @@ const DisplaySingleBoard = (props) => {
                 await sortRecentBoard(_id);
                 window.location.href = `/board/${_id}`;
             }}/>
-            <ActionMenu />
+            <ActionMenu id={_id} handleSetActive={handleSetActive} active={active}/>
         </BoardContainer>
     )
 }

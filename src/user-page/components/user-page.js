@@ -64,9 +64,17 @@ const AddBoardButton = styled.button`
     }
 `;
 
+const Overlay = styled.div`
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 4;
+`;
+
 const UserPage = (props) => {
     const [ boardData, setBoardData ] = useState([]);
     const [ displayAddBoard, setDisplayAddBoard ] = useState(false);
+    const [active, setActive] = useState(false);
 
     useEffect(() => {
         axios.get('/user/get/boardData').then(data => setBoardData(data.data));
@@ -74,13 +82,17 @@ const UserPage = (props) => {
 
     const handleOverlayClick = useCallback(
         (e) => {
-            if(e.currentTarget === e.target) {
-                setDisplayAddBoard(false);
-            }
-        },[]);
+            if(e.currentTarget === e.target) setDisplayAddBoard(false);
+        },[setDisplayAddBoard, displayAddBoard]);
+
+    const handleSetActive = useCallback((e) => {
+        if(!active) setActive(e.target.getAttribute('data-id'));
+        else setActive(false);
+    }, [setActive, active]);
 
     return(
-        <UserContainer>
+        <UserContainer
+        >
             { displayAddBoard && <AddBoardOverlay handleOverlayClick={ handleOverlayClick } />}
             <HeaderContainer>
                 <Heading onClick={returnHome}>Yello</Heading>
@@ -88,8 +100,9 @@ const UserPage = (props) => {
             <DataContainer>
                 <BoardsTitle>Your Boards</BoardsTitle>
                 <AddBoardButton onClick={ () => setDisplayAddBoard(true) }>+ Add another Board</AddBoardButton>
-                <DisplayBoards boardData={boardData} />
+                <DisplayBoards boardData={boardData} handleSetActive={handleSetActive} active={active}/>
             </DataContainer>
+            { active && <Overlay onClick={() => setActive(false)}/> }
         </UserContainer>
     );
 }
