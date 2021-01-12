@@ -5,6 +5,7 @@ import { Blurhash } from 'react-blurhash';
 
 // Internal modules
 import { sortRecentBoard } from '../utility/sort-recent-board';
+import ActionMenu from './action-menu';
 
 const BoardsContainer = styled.div`
     width: 100%;
@@ -108,6 +109,7 @@ const DisplaySingleBoard = (props) => {
                 await sortRecentBoard(_id);
                 window.location.href = `/board/${_id}`;
             }}/>
+            <ActionMenu />
         </BoardContainer>
     )
 }

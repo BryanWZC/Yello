@@ -1,5 +1,5 @@
 // External modules
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
@@ -72,11 +72,12 @@ const UserPage = (props) => {
         axios.get('/user/get/boardData').then(data => setBoardData(data.data));
     }, []);
 
-    function handleOverlayClick(e) {
-        if(e.currentTarget === e.target) {
-            setDisplayAddBoard(false);
-        }
-    }
+    const handleOverlayClick = useCallback(
+        (e) => {
+            if(e.currentTarget === e.target) {
+                setDisplayAddBoard(false);
+            }
+        },[]);
 
     return(
         <UserContainer>

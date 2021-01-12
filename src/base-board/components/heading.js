@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from 'react-redux';
 // Internal modules 
 import * as select from '../selectors/selectors';
 import { enableImageSearch } from '../../unsplash-image-picker/slices/background-slice';
-import axios from 'axios';
 import { returnHome } from '../utility/general';
 
 const Container = styled.div`
