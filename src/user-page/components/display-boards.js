@@ -76,22 +76,27 @@ const Clickable = styled.div`
 `;
 
 const DisplayBoards = (props) => {
-    const { boardData, handleSetActive, active } = props;
+    const { boardData, handleSetActive, menuActive, openRenameOverlay } = props;
     return(
         <BoardsContainer>
-            { boardData.map(board =>  <DisplaySingleBoard board={board} key={board._id} handleSetActive={handleSetActive} active={active}/> ) }
+            { boardData.map(board =>  <DisplaySingleBoard 
+                openRenameOverlay={openRenameOverlay} 
+                board={board} 
+                key={board._id} 
+                handleSetActive={handleSetActive} 
+                menuActive={menuActive}/> ) }
         </BoardsContainer>
     )
 }
 
 const DisplaySingleBoard = (props) => {
-    const { handleSetActive, active } = props;
+    const { handleSetActive, menuActive, openRenameOverlay } = props;
     const [loadedBackground, setLoadedBackground] = useState(false);
     const styleDisplay = !loadedBackground ? { display: 'none' } : {}
     const { _id, title, thumb, blurHash } = props.board;
     return(
         <BoardContainer
-            active={active}
+            active={menuActive}
         >
             {!loadedBackground && 
                 blurHash &&
@@ -111,7 +116,7 @@ const DisplaySingleBoard = (props) => {
                 await sortRecentBoard(_id);
                 window.location.href = `/board/${_id}`;
             }}/>
-            <ActionMenu id={_id} handleSetActive={handleSetActive} active={active}/>
+            <ActionMenu id={_id} title={title} handleSetActive={handleSetActive} menuActive={menuActive} openRenameOverlay={openRenameOverlay}/>
         </BoardContainer>
     )
 }

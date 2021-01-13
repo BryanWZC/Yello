@@ -50,7 +50,6 @@ router.route('/post/recentBoard')
 
         const currentBoards = boards;
         currentBoards.map(board => board._id === boardId ? newBoards.unshift(board) : newBoards.push(board));
-        console.log(boards)
         req.session.passport.boards = newBoards;
         await updateUser(_id, newBoards);
         res.end();

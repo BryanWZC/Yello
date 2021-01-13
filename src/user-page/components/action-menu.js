@@ -31,7 +31,7 @@ const Menu = styled.div`
     height: 100px;
     left: 0px;
     top: 24px;
-    display: ${props => props.active === props.id ? 'flex' : 'none'};
+    display: ${props => props.active.id === props.id ? 'flex' : 'none'};
     flex-direction: column;
     border: none;
     border-radius: 5px;
@@ -68,31 +68,32 @@ const Action = styled.button`
 `;
 
 const ActionMenu = (props) => {
-    const { handleSetActive, active, id } = props;
+    const { handleSetActive, menuActive, id, title, openRenameOverlay } = props;
     const [hover, setHover] = useState(false);
 
     return(
         <ActionMenuContainer 
             onMouseOver={() => setHover(true)} 
             onMouseLeave={() => setHover(false)}
-            active={active}
+            active={menuActive}
         >
             { 
-                hover && !active ? 
+                hover && !menuActive ? 
                 <Dots src={threeDotsYellow} 
                     alt="ellipsis"
                     onClick={handleSetActive}
                     data-id={id}
-                    active={active}
+                    data-title={title}
+                    active={menuActive}
                 /> :
                 <Dots src={threeDots} alt="ellipsis"/> 
             }
             <Menu 
-                active={active}
+                active={menuActive}
                 id={id}
             >
                 <Title>Board Actions</Title>
-                <Action>Rename</Action>
+                <Action onClick={openRenameOverlay}>Rename</Action>
                 <Action>Delete</Action>
             </Menu>
         </ActionMenuContainer>

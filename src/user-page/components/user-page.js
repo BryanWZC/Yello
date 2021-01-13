@@ -6,6 +6,7 @@ import axios from 'axios';
 // Internal modules
 import AddBoardOverlay from './add-board-overlay';
 import DisplayBoards from './display-boards';
+import RenameBoardOverlay from './rename-board-overlay';
 import { returnHome } from '../utility/general';
 
 const UserContainer = styled.div`
@@ -64,7 +65,7 @@ const AddBoardButton = styled.button`
     }
 `;
 
-const Overlay = styled.div`
+const TransparentOverlay = styled.div`
     width: 100%;
     height: 100%;
     position: absolute;
@@ -74,35 +75,48 @@ const Overlay = styled.div`
 const UserPage = (props) => {
     const [ boardData, setBoardData ] = useState([]);
     const [ displayAddBoard, setDisplayAddBoard ] = useState(false);
-    const [active, setActive] = useState(false);
+    const [ displayRenameBoard, setDisplayRenameBoard ] = useState(false);
+    const [ menuActive, setMenuActive ] = useState(false);
 
     useEffect(() => {
         axios.get('/user/get/boardData').then(data => setBoardData(data.data));
     }, []);
 
-    const handleOverlayClick = useCallback(
+    const closeAddBoardOverlay = useCallback(
         (e) => {
             if(e.currentTarget === e.target) setDisplayAddBoard(false);
         },[setDisplayAddBoard, displayAddBoard]);
 
+
+    const openRenameOverlay = useCallback(() => {
+        setDisplayRenameBoard(menuActive);
+        setMenuActive(false); // closes action menu
+    }, [setDisplayRenameBoard, displayRenameBoard, menuActive]);
+
+    const closeRenameOverlay = useCallback(
+        (e) => {
+            if(e.currentTarget === e.target) setDisplayRenameBoard(false);
+    },[setDisplayRenameBoard, displayRenameBoard]);
+
     const handleSetActive = useCallback((e) => {
-        if(!active) setActive(e.target.getAttribute('data-id'));
-        else setActive(false);
-    }, [setActive, active]);
+        if(!menuActive) setMenuActive({ id: e.target.getAttribute('data-id'), title: e.target.getAttribute('data-title') });
+        else setMenuActive(false);
+    }, [setMenuActive, menuActive]);
 
     return(
         <UserContainer
         >
-            { displayAddBoard && <AddBoardOverlay handleOverlayClick={ handleOverlayClick } />}
+            { displayAddBoard && <AddBoardOverlay handleClick={ closeAddBoardOverlay } />}
+            { displayRenameBoard && <RenameBoardOverlay handleClick={ closeRenameOverlay } currentBoard={displayRenameBoard}/>}
             <HeaderContainer>
                 <Heading onClick={returnHome}>Yello</Heading>
             </HeaderContainer>
             <DataContainer>
                 <BoardsTitle>Your Boards</BoardsTitle>
                 <AddBoardButton onClick={ () => setDisplayAddBoard(true) }>+ Add another Board</AddBoardButton>
-                <DisplayBoards boardData={boardData} handleSetActive={handleSetActive} active={active}/>
+                <DisplayBoards boardData={boardData} handleSetActive={handleSetActive} menuActive={menuActive} openRenameOverlay={openRenameOverlay}/>
             </DataContainer>
-            { active && <Overlay onClick={() => setActive(false)}/> }
+            { menuActive && <TransparentOverlay onClick={() => setMenuActive(false)}/> }
         </UserContainer>
     );
 }

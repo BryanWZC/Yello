@@ -13,7 +13,7 @@ const OverlayContainer = styled.div`
     z-index: 100;
 `;
 
-const AddBoardContainer = styled.div`
+const RenameBoardContainer = styled.div`
     position: absolute;
     width: 400px;
     border: none;
@@ -22,17 +22,17 @@ const AddBoardContainer = styled.div`
     background-color: #f4f5f7;
 `;
 
-const AddBoardForm = styled.form`
+const RenameBoardForm = styled.form`
     width: 100%;
     height: 100%;
 `;
 
-const AddBoardTitle = styled.label`
+const RenameBoardTitle = styled.label`
     width: 100%;
     font-size: 16px;
 `;
 
-const AddBoardInput = styled.input`
+const RenameBoardInput = styled.input`
     height: 32px;
     margin-top: 16px;
     margin-bottom: 8px;
@@ -51,7 +51,7 @@ const AddBoardInput = styled.input`
     }
 `;
 
-const SubmitBoard = styled.input`
+const SubmitRename = styled.input`
     margin-bottom: 16px;
     width: 80px;
     height: 25px;
@@ -65,26 +65,26 @@ const SubmitBoard = styled.input`
     text-align: center;
 `;
 
-const AddBoardOverlay = (props) => {
-    const { handleClick } = props;
+const RenameBoardOverlay = (props) => {
+    const { handleClick, currentBoard } = props;
     return(
         <OverlayContainer onClick={ handleClick }>
-            <AddBoardContainer>
-                <AddBoardForm action='/user/post/addBoard' method='post'>
-                    <AddBoardTitle>New Board Title</AddBoardTitle>
-                    <AddBoardInput
+            <RenameBoardContainer>
+                <RenameBoardForm action='/user/post/renameBoard' method='post'>
+                    <RenameBoardTitle>Rename Board: {currentBoard.title}</RenameBoardTitle>
+                    <RenameBoardInput 
                         type='text'
                         autoComplete='off'
                         name='boardTitle'
                     />
-                    <SubmitBoard 
+                    <SubmitRename 
                         type='submit'
                         value='Submit'
                     />
-                </AddBoardForm>
-            </AddBoardContainer>
+                </RenameBoardForm>
+            </RenameBoardContainer>
         </OverlayContainer>
     )
 }
 
-export default AddBoardOverlay;
+export default RenameBoardOverlay;
