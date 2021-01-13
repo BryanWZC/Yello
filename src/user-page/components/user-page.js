@@ -107,7 +107,7 @@ const UserPage = (props) => {
         <UserContainer
         >
             { displayAddBoard && <AddBoardOverlay handleClick={ closeAddBoardOverlay } />}
-            { displayRenameBoard && <RenameBoardOverlay handleClick={ closeRenameOverlay } currentBoard={displayRenameBoard}/>}
+            { displayRenameBoard && <RenameBoardOverlay handleClick={ closeRenameOverlay } currentBoard={displayRenameBoard} returnHome={returnHome}/>}
             <HeaderContainer>
                 <Heading onClick={returnHome}>Yello</Heading>
             </HeaderContainer>

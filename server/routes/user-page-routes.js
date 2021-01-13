@@ -19,26 +19,59 @@ router.route('/:user')
 
 router.route('/get/boardData')
     .get((req, res) => {
-        const boards = req.session.passport.boards || req.user.boards;
-        req.session.passport.boards = boards;
-        if(!boards) throw new Error('Missing boards');
-        res.json(boards);
+        try {
+            const boards = req.session.passport.boards || req.user.boards;
+            req.session.passport.boards = boards;
+            if(!boards) throw new Error('Missing boards');
+            res.json(boards);
+        } catch (err) {
+            console.log(err);
+            res.end();
+        }
     });
 
 router.route('/post/addBoard')
     .post(async(req, res) => {
-        const { boardTitle } = req.body; 
-        const { _id } = req.user;
-        const { boards } = req.session.passport;
-        
-        const imageJson = await getRandomImageJson();
+        try {
+            const { boardTitle } = req.body; 
+            const { _id } = req.user;
+            const { boards } = req.session.passport;
+            if(!boardTitle || !boardId) throw new Error('No Board Title or Id provided');
+            
+            const imageJson = await getRandomImageJson();
 
-        const newBoard = await createNewBoard(boardTitle, imageJson);
-        const newBoards = [ newBoard, ...boards ];
+            const newBoard = await createNewBoard(boardTitle, imageJson);
+            const newBoards = [ newBoard, ...boards ];
 
-        req.session.passport.boards = newBoards;
-        await updateUser(_id, newBoards);
-        res.redirect('/board/' + newBoard._id);
+            req.session.passport.boards = newBoards;
+            await updateUser(_id, newBoards);
+            res.redirect('/board/' + newBoard._id);
+        } catch (err) {
+            console.log(err);
+            res.end();
+        }
+    });
+
+router.route('/post/renameBoard')
+    .post(async(req, res) => {
+        try {
+            const { boardTitle, boardId } = req.body;
+            const { _id } = req.body;
+            const { boards } = req.session.passport;
+            if(!boardTitle || !boardId) throw new Error('No Board Title or Id provided');
+
+            const newBoards = boards.map(board => {
+                if(board._id === boardId) board.title = boardTitle;
+                return board;
+            });
+
+            req.session.passport.boards = newBoards;
+            await updateUser(_id, newBoards);
+            res.end();
+        } catch (err) {
+            console.log(err);
+            res.end();
+        }
     });
 
 router.route('/post/recentBoard')
@@ -53,7 +86,7 @@ router.route('/post/recentBoard')
         req.session.passport.boards = newBoards;
         await updateUser(_id, newBoards);
         res.end();
-    })
+    });
 
 router.route('/dist/userPage.js')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'userPage.js')));

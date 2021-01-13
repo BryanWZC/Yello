@@ -76,6 +76,7 @@ const AddBoardOverlay = (props) => {
                         type='text'
                         autoComplete='off'
                         name='boardTitle'
+                        required
                     />
                     <SubmitBoard 
                         type='submit'

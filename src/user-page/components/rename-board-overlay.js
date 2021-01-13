@@ -66,7 +66,7 @@ const SubmitRename = styled.input`
 `;
 
 const RenameBoardOverlay = (props) => {
-    const { handleClick, currentBoard } = props;
+    const { handleClick, currentBoard, returnHome } = props;
     return(
         <OverlayContainer onClick={ handleClick }>
             <RenameBoardContainer>
@@ -76,10 +76,13 @@ const RenameBoardOverlay = (props) => {
                         type='text'
                         autoComplete='off'
                         name='boardTitle'
+                        required
                     />
+                    <input type='hidden' name='boardId' value={currentBoard.id}/>
                     <SubmitRename 
                         type='submit'
                         value='Submit'
+                        onClick={returnHome}
                     />
                 </RenameBoardForm>
             </RenameBoardContainer>
