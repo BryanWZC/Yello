@@ -82,7 +82,6 @@ const RenameBoardOverlay = (props) => {
                     <SubmitRename 
                         type='submit'
                         value='Submit'
-                        onClick={returnHome}
                     />
                 </RenameBoardForm>
             </RenameBoardContainer>

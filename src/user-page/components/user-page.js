@@ -7,7 +7,7 @@ import axios from 'axios';
 import AddBoardOverlay from './add-board-overlay';
 import DisplayBoards from './display-boards';
 import RenameBoardOverlay from './rename-board-overlay';
-import { returnHome } from '../utility/general';
+import { returnHome, deleteBoard } from '../utility/general';
 
 const UserContainer = styled.div`
     width: 100%;
@@ -103,18 +103,34 @@ const UserPage = (props) => {
         else setMenuActive(false);
     }, [setMenuActive, menuActive]);
 
+    const handleDeleteBoard = useCallback(
+        async () => {
+            await deleteBoard(menuActive);
+            setMenuActive(false); // closes action menu
+        }, [deleteBoard, setMenuActive, menuActive]);
+
     return(
         <UserContainer
         >
             { displayAddBoard && <AddBoardOverlay handleClick={ closeAddBoardOverlay } />}
-            { displayRenameBoard && <RenameBoardOverlay handleClick={ closeRenameOverlay } currentBoard={displayRenameBoard} returnHome={returnHome}/>}
+            { displayRenameBoard && <RenameBoardOverlay 
+                handleClick={ closeRenameOverlay } 
+                currentBoard={displayRenameBoard} 
+                returnHome={returnHome}
+            />}
             <HeaderContainer>
                 <Heading onClick={returnHome}>Yello</Heading>
             </HeaderContainer>
             <DataContainer>
                 <BoardsTitle>Your Boards</BoardsTitle>
                 <AddBoardButton onClick={ () => setDisplayAddBoard(true) }>+ Add another Board</AddBoardButton>
-                <DisplayBoards boardData={boardData} handleSetActive={handleSetActive} menuActive={menuActive} openRenameOverlay={openRenameOverlay}/>
+                <DisplayBoards 
+                    boardData={boardData} 
+                    handleSetActive={handleSetActive} 
+                    menuActive={menuActive} 
+                    openRenameOverlay={openRenameOverlay}
+                    handleDelete={handleDeleteBoard}
+                />
             </DataContainer>
             { menuActive && <TransparentOverlay onClick={() => setMenuActive(false)}/> }
         </UserContainer>

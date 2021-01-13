@@ -76,7 +76,7 @@ const Clickable = styled.div`
 `;
 
 const DisplayBoards = (props) => {
-    const { boardData, handleSetActive, menuActive, openRenameOverlay } = props;
+    const { boardData, handleSetActive, menuActive, openRenameOverlay, handleDelete } = props;
     return(
         <BoardsContainer>
             { boardData.map(board =>  <DisplaySingleBoard 
@@ -84,13 +84,15 @@ const DisplayBoards = (props) => {
                 board={board} 
                 key={board._id} 
                 handleSetActive={handleSetActive} 
-                menuActive={menuActive}/> ) }
+                menuActive={menuActive}
+                handleDelete={handleDelete}
+            /> ) }
         </BoardsContainer>
     )
 }
 
 const DisplaySingleBoard = (props) => {
-    const { handleSetActive, menuActive, openRenameOverlay } = props;
+    const { handleSetActive, menuActive, openRenameOverlay, handleDelete } = props;
     const [loadedBackground, setLoadedBackground] = useState(false);
     const styleDisplay = !loadedBackground ? { display: 'none' } : {}
     const { _id, title, thumb, blurHash } = props.board;
@@ -116,7 +118,14 @@ const DisplaySingleBoard = (props) => {
                 await sortRecentBoard(_id);
                 window.location.href = `/board/${_id}`;
             }}/>
-            <ActionMenu id={_id} title={title} handleSetActive={handleSetActive} menuActive={menuActive} openRenameOverlay={openRenameOverlay}/>
+            <ActionMenu 
+                id={_id} 
+                title={title} 
+                handleSetActive={handleSetActive} 
+                menuActive={menuActive} 
+                openRenameOverlay={openRenameOverlay}
+                handleDelete={handleDelete}
+            />
         </BoardContainer>
     )
 }

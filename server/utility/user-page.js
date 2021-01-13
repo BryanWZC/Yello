@@ -3,7 +3,7 @@ const axios = require('axios');
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 
 // Internal modules
-const { User, Board } = require('../db/model');
+const { User, Board, Card, List } = require('../db/model');
 
 /**
  * Returns a random unsplash image json
@@ -48,8 +48,22 @@ async function updateUser(_id, newBoards) {
     await User.findByIdAndUpdate(_id, { boards: newBoards }, { useFindAndModify: false });
 }
 
+/**
+ * Deletes selected board and updates db
+ * @param {String} boardId - Board id of current board to be deleted
+ */
+async function deleteBoard(boardId) { // Can run async
+    let board = await Board.findByIdAndDelete(boardId);
+
+    board.cardIds.map(async (cardId) => {
+        const items = (await Card.findByIdAndDelete(cardId)).listIds;
+        items.map(async (itemId) => (await List.findOneAndDelete(itemId)));
+    });
+}
+
 module.exports = {
     getRandomImageJson,
     createNewBoard,
     updateUser,
+    deleteBoard,
 }

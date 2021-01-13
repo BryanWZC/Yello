@@ -68,7 +68,7 @@ const Action = styled.button`
 `;
 
 const ActionMenu = (props) => {
-    const { handleSetActive, menuActive, id, title, openRenameOverlay } = props;
+    const { handleSetActive, menuActive, id, title, openRenameOverlay, handleDelete } = props;
     const [hover, setHover] = useState(false);
 
     return(
@@ -94,7 +94,7 @@ const ActionMenu = (props) => {
             >
                 <Title>Board Actions</Title>
                 <Action onClick={openRenameOverlay}>Rename</Action>
-                <Action>Delete</Action>
+                <Action onClick={handleDelete}>Delete</Action>
             </Menu>
         </ActionMenuContainer>
     );
