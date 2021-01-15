@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Internal modules
 const path = require('path');
-const { getRandomImageJson, createNewBoard, updateUser, deleteBoard } = require('../utility/user-page');
+const { getRandomImageJson, createNewBoard, updateUser, deleteBoard, updateBoardTitle } = require('../utility/user-page');
 
 router.use(express.static('./assets'));
 router.use((req, res, next) => {
@@ -66,7 +66,10 @@ router.route('/post/renameBoard')
             if(!boardTitle || !boardId) throw new Error('No Board Title or Id provided');
 
             const newBoards = boards.map(board => {
-                if(board._id === boardId) board.title = boardTitle;
+                if(board._id === boardId) {
+                    board.title = boardTitle;
+                    updateBoardTitle(boardId, boardTitle); // Let this run async
+                }
                 return board;
             });
 

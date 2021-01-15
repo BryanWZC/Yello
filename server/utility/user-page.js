@@ -41,11 +41,20 @@ async function createNewBoard(boardTitle, imageJson) {
 
 /**
  * Update User doc with new Board object
- * @param {String} _id  - id of created board
+ * @param {String} _id  - id of user
  * @param {Object} newBoard  - new board object
  */
 async function updateUser(_id, newBoards) {
     await User.findByIdAndUpdate(_id, { boards: newBoards }, { useFindAndModify: false });
+}
+
+/**
+ * Updates board name in db with new board name
+ * @param {String} _id - id of created board 
+ * @param {Object} newBoard - new Board object 
+ */
+async function updateBoardTitle(boardId, boardTitle) {
+    await Board.findByIdAndUpdate(boardId, { title: boardTitle }, { useFindAndModify: false });
 }
 
 /**
@@ -65,5 +74,6 @@ module.exports = {
     getRandomImageJson,
     createNewBoard,
     updateUser,
+    updateBoardTitle,
     deleteBoard,
 }

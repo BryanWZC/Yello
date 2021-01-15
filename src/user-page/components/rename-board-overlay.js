@@ -66,7 +66,7 @@ const SubmitRename = styled.input`
 `;
 
 const RenameBoardOverlay = (props) => {
-    const { handleClick, currentBoard, returnHome } = props;
+    const { handleClick, currentBoard } = props;
     return(
         <OverlayContainer onClick={ handleClick }>
             <RenameBoardContainer>
