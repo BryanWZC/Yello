@@ -29,6 +29,8 @@ export const CardMenuOffsets = (state) => state.cardMenuData.offsets;
 
 export const cardMenuCardId = (state) => state.cardMenuData.cardId;
 
+export const renameOverlayActive = (state) => state.cardMenuData.renameOverlayActive;
+
 // Selections from itemMenuData slice
 export const displayItemMenu = (state) => state.itemMenuData.displayItemMenu;
 

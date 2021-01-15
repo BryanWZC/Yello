@@ -35,7 +35,7 @@ const Title = styled.p`
     font-weight: bold;
 `;
 
-const Delete = styled.button`
+const Option = styled.button`
     width: 100%;
     cursor: pointer;
     border: none;
@@ -55,9 +55,12 @@ const CardActions = (props) => {
     return(
         <Container id='card-action-menu' offsets={offsets}>
             <Title>Card actions</Title>
-            <Delete id='card-action-menu' onClick={() => dispatch(handleCardDelete())}>
+            <Option>
+                Rename
+            </Option>
+            <Option id='card-action-menu' onClick={() => dispatch(handleCardDelete())}>
                 Delete
-            </Delete>
+            </Option>
         </Container>
     );
 }

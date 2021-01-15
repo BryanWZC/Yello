@@ -61,30 +61,29 @@ export const Board = () => {
     }, [dispatch]);
 
     return(
-        <React.Fragment>
-            <Container
-                onClick={(e) => {
-                    e.persist();
-                    const id = e.target.getAttribute('id');
-                    if(id !== 'add-card-input') dispatch(closeCardInput());
-                    if(id !== 'card-action-menu') dispatch(cardMenuStateReset());
-                }}
-            >
-                <BackgroundImage />
-                <Heading />
-                <OverflowContainer>
-                    <DragDropContext onDragEnd={(res) => dispatch(onDragEnd(res))}>
-                        <Cards />
-                    </DragDropContext>
-                    <div>
-                        { useSelector(select.renderAddCard) ? <AddNewCard /> : null }
-                    </div>
-                    { useSelector(select.displayCardMenu) ? <CardActions /> : null }
-                </OverflowContainer>
-                { useSelector(select.displayItemMenu) ? <ListItemExpand /> : null }
-                { useSelector(select2.backgroundDisplayImageSearch) ? <Background /> : null }
-                <BlurHashCanvas id='blurHash'></BlurHashCanvas>
-            </Container>
-        </React.Fragment>
+        <Container
+            onClick={(e) => {
+                e.persist();
+                const id = e.target.getAttribute('id');
+                if(id !== 'add-card-input') dispatch(closeCardInput());
+                if(id !== 'card-action-menu') dispatch(cardMenuStateReset());
+            }}
+        >
+            <BackgroundImage />
+            <Heading />
+            <OverflowContainer>
+                <DragDropContext onDragEnd={(res) => dispatch(onDragEnd(res))}>
+                    <Cards />
+                </DragDropContext>
+                <div>
+                    { useSelector(select.renderAddCard) ? <AddNewCard /> : null }
+                </div>
+                { useSelector(select.displayCardMenu) ? <CardActions /> : null }
+            </OverflowContainer>
+            { useSelector(select.displayItemMenu) ? <ListItemExpand /> : null }
+            { useSelector(select2.backgroundDisplayImageSearch) ? <Background /> : null }
+            <BlurHashCanvas id='blurHash'></BlurHashCanvas>
+            { useSelector(select.renameOverlayActive) && <CardRenameOverlay />}
+        </Container>
     );
 }

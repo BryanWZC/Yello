@@ -22,6 +22,14 @@ const setOffsetsCard = createAsyncThunk(
         }
 });
 
+// TODOOOOOOOOOOOOOOOOO
+const handleCardRename = createAsyncThunk(
+    'cardMenu/handleCardRename',
+    async() => {
+
+    }
+)
+
 /**
  * Handles card deletes from menu. Action handled in board slice for boardData update.
  */
@@ -47,6 +55,7 @@ export const cardMenuData = createSlice({
         displayCardMenu: false,
         offsets: null,
         cardId: '',
+        renameOverlayActive: false,
     },
     reducers: { 
         cardMenuStateReset: {
