@@ -20,6 +20,7 @@ import { Cards, AddNewCard } from './card';
 import { ListItemExpand } from './list-item-expand';
 import { CardActions } from './card-actions';
 import BackgroundImage from './background-image';
+import CardRenameOverlay from './card-rename-overlay';
 
 // Internal modules - unsplash-image-picker feature
 import * as select2 from '../../unsplash-image-picker/selectors/selectors';
@@ -83,7 +84,7 @@ export const Board = () => {
             { useSelector(select.displayItemMenu) ? <ListItemExpand /> : null }
             { useSelector(select2.backgroundDisplayImageSearch) ? <Background /> : null }
             <BlurHashCanvas id='blurHash'></BlurHashCanvas>
-            { useSelector(select.renameOverlayActive) && <CardRenameOverlay />}
+            { useSelector(select.renameOverlayActive) && <CardRenameOverlay /> }
         </Container>
     );
 }

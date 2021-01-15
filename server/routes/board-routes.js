@@ -97,6 +97,16 @@ router.route('/post/list-item')
     });
 
 /**
+ * Renames the card in the db
+ */
+router.route('/post/renameCard')
+    .post(async(req, res) => {
+        const { cardId, cardTitle } = req.body;
+        const newCard = await base.updateCardTitle({ cardId, cardTitle });
+        res.json(newCard);
+    });
+
+/**
  * Updates card order within db after a drag occurs
  */
 router.route('/update/card-order')

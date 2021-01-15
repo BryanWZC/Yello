@@ -57,6 +57,14 @@ async function updateItemContent({ _id, content }) {
 }
 
 /**
+ * Updates db to change title of card to new title
+ * @param {Object} { _id, title } - object containing card id and new title 
+ */
+async function updateCardTitle({ cardId, cardTitle }) {
+    return await Card.findByIdAndUpdate(cardId, { title: cardTitle }, { useFindAndModify: false, new: true }).lean().exec();
+}
+
+/**
  * Delete an item from db and updates card listIds array
  * @param {Object} { cardId, itemId } - cardId with itemId of to be deleted item
  */
@@ -81,6 +89,7 @@ module.exports = {
         updateCardOrder,
         updateListOrder,
         updateItemContent,
+        updateCardTitle,
         deleteItem,
         deleteCard,
     }

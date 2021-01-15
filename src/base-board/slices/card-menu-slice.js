@@ -22,14 +22,6 @@ const setOffsetsCard = createAsyncThunk(
         }
 });
 
-// TODOOOOOOOOOOOOOOOOO
-const handleCardRename = createAsyncThunk(
-    'cardMenu/handleCardRename',
-    async() => {
-
-    }
-)
-
 /**
  * Handles card deletes from menu. Action handled in board slice for boardData update.
  */
@@ -73,6 +65,7 @@ export const cardMenuData = createSlice({
                 }
             } 
         },
+        toggleRenameOverlay: (state) => { state.renameOverlayActive = !state.renameOverlayActive ? state.cardId : false; },
     },
     extraReducers: { 
         [setOffsetsCard.fulfilled]: (state, { payload }) => {
@@ -91,6 +84,6 @@ export const cardMenuData = createSlice({
     }
 });
 
-export const { cardMenuStateReset } = cardMenuData.actions;
+export const { cardMenuStateReset, toggleRenameOverlay } = cardMenuData.actions;
 
 export { setOffsetsCard, handleCardDelete };

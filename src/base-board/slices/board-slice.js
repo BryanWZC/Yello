@@ -151,7 +151,24 @@ export const boardData = createSlice({
                 }
             }
         },
-        closeListInput: (state) => { state.expandListInput = ''; }
+        closeListInput: (state) => { state.expandListInput = ''; },
+        handleCardRename: {
+            reducer: (state, { payload }) => {
+                const { cardId, cardTitle } = payload;
+                const cards = state.boardData.cardIds;
+                for(let i = 0; i < cards.length; i++) {
+                    if(cards[i]._id === cardId) {
+                        cards[i].title = cardTitle;
+                        break;
+                    }
+                }
+            },
+            prepare: ({ cardId, cardTitle }) => {
+                return {
+                    payload: { cardId, cardTitle }
+                }
+            }
+        }
     },
     extraReducers: {
         [getBoardData.fulfilled]: (state, { payload }) => {
@@ -209,6 +226,6 @@ export const boardData = createSlice({
     }
 });
 
-export const { setCardTitle, setListTitle, setLoadedBackground, setExpandCardInput, closeCardInput, setExpandListInput, closeListInput } = boardData.actions;
+export const { setCardTitle, setListTitle, setLoadedBackground, setExpandCardInput, closeCardInput, setExpandListInput, closeListInput, handleCardRename } = boardData.actions;
 
 export { getBoardData, handleAddCard, handleAddList, onDragEnd };

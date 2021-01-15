@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // Other internal modules
 import * as select from '../selectors/selectors';
-import { handleCardDelete } from '../slices/card-menu-slice';
+import { handleCardDelete, toggleRenameOverlay } from '../slices/card-menu-slice';
 
 const Container = styled.div`
     position: absolute;
@@ -55,7 +55,7 @@ const CardActions = (props) => {
     return(
         <Container id='card-action-menu' offsets={offsets}>
             <Title>Card actions</Title>
-            <Option>
+            <Option onClick={() => dispatch(toggleRenameOverlay())}>
                 Rename
             </Option>
             <Option id='card-action-menu' onClick={() => dispatch(handleCardDelete())}>
