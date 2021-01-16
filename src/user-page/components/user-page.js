@@ -8,6 +8,7 @@ import AddBoardOverlay from './add-board-overlay';
 import DisplayBoards from './display-boards';
 import RenameBoardOverlay from './rename-board-overlay';
 import { returnHome, deleteBoard, getBoardData } from '../utility/general';
+import { closeAddBoardOverlayCB, closeRenameOverlayCB, handleDeleteBoardCB, handleSetActiveCB, openRenameOverlayCB } from '../utility/usecallback-helpers';
 
 const UserContainer = styled.div`
     width: 100%;
@@ -78,38 +79,27 @@ const UserPage = (props) => {
     const [ displayRenameBoard, setDisplayRenameBoard ] = useState(false);
     const [ menuActive, setMenuActive ] = useState(false);
 
-    useEffect(() => {
-        getBoardData().then(data => setBoardData(data));
+    useEffect(() => { 
+        getBoardData().then(data => setBoardData(data)); 
     }, []);
 
     const closeAddBoardOverlay = useCallback(
-        (e) => {
-            if(e.currentTarget === e.target) setDisplayAddBoard(false);
-        },[setDisplayAddBoard, displayAddBoard]);
+        (e) => closeAddBoardOverlayCB(e, { setDisplayAddBoard }));
 
-
-    const openRenameOverlay = useCallback(() => {
-        setDisplayRenameBoard(menuActive);
-        setMenuActive(false); // closes action menu
-    }, [setDisplayRenameBoard, displayRenameBoard, menuActive]);
+    const openRenameOverlay = useCallback(
+        () => openRenameOverlayCB({ setDisplayRenameBoard, setMenuActive, menuActive }), [setDisplayRenameBoard, menuActive]);
 
     const closeRenameOverlay = useCallback(
-        (e) => {
-            if(e.currentTarget === e.target) setDisplayRenameBoard(false);
-    },[setDisplayRenameBoard, displayRenameBoard]);
+        (e) => closeRenameOverlayCB(e, { setDisplayRenameBoard }));
 
-    const onSubmitRename = useCallback(() => setDisplayRenameBoard(false));
+    const onSubmitRename = useCallback(
+        () => setDisplayRenameBoard(false));
 
-    const handleSetActive = useCallback((e) => {
-        if(!menuActive) setMenuActive({ id: e.target.getAttribute('data-id'), title: e.target.getAttribute('data-title') });
-        else setMenuActive(false);
-    }, [setMenuActive, menuActive]);
+    const handleSetActive = useCallback(
+        (e) => handleSetActiveCB(e, { menuActive, setMenuActive }), [setMenuActive, menuActive]);
 
     const handleDeleteBoard = useCallback(
-        async () => {
-            await deleteBoard(menuActive);
-            setMenuActive(false); // closes action menu
-        }, [deleteBoard, setMenuActive, menuActive]);
+        async () => await handleDeleteBoardCB({ deleteBoard, menuActive, setBoardData, setMenuActive }), [deleteBoard, setMenuActive, menuActive]);
 
     const handleUpdateBoards = useCallback((data) => setBoardData(data), [setBoardData]);
 

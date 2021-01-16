@@ -82,7 +82,7 @@ const RenameBoardOverlay = (props) => {
                         type='text'
                         autoComplete='off'
                         name='boardTitle'
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={ (e) => setTitle(e.target.value) }
                         autoFocus
                         required
                     />

@@ -111,7 +111,7 @@ router.route('/post/deleteBoard')
 
             await updateUser(_id, newBoards);
             deleteBoard(boardId);
-            res.end();
+            res.json(newBoards);
         } catch (err) {
             console.log(err);
             res.end();

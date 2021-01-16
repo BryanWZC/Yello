@@ -29,6 +29,5 @@ export const handleSubmitRename = async(e, props) => {
  * @param {Object} menuActive - object containing current board id
  */
 export const deleteBoard = async (menuActive) => {
-    await axios.post('/user/post/deleteBoard', { boardId: menuActive.id });
-    await returnHome();
+    return (await axios.post('/user/post/deleteBoard', { boardId: menuActive.id })).data;
 };
