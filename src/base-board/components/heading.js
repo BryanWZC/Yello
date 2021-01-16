@@ -29,6 +29,15 @@ const BoardTitle = styled.h3`
     color: #fff;
     overflow: hidden;
     text-overflow: ellipsis;
+    
+    @media (max-width: 850px) {
+        font-size: 16px;
+    }
+
+    @media (max-width: 530px) {
+        font-size: 14px;
+    }
+
 `;
 
 const MiddleContainer = styled.div`
@@ -70,6 +79,15 @@ const BackgroundButton = styled.button`
 const BackgroundText = styled.h3`
     align-text: center;
     pointer-events: none;
+
+    @media (max-width: 850px) {
+        font-size: 16px;
+    }
+
+    @media (max-width: 530px) {
+        font-size: 12px;
+    }
+
 `;
 
 const Heading = (props) => {
