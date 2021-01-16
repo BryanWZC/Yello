@@ -7,7 +7,7 @@ import axios from 'axios';
 import AddBoardOverlay from './add-board-overlay';
 import DisplayBoards from './display-boards';
 import RenameBoardOverlay from './rename-board-overlay';
-import { returnHome, deleteBoard } from '../utility/general';
+import { returnHome, deleteBoard, getBoardData } from '../utility/general';
 
 const UserContainer = styled.div`
     width: 100%;
@@ -79,7 +79,7 @@ const UserPage = (props) => {
     const [ menuActive, setMenuActive ] = useState(false);
 
     useEffect(() => {
-        axios.get('/user/get/boardData').then(data => setBoardData(data.data));
+        getBoardData().then(data => setBoardData(data));
     }, []);
 
     const closeAddBoardOverlay = useCallback(
@@ -98,6 +98,8 @@ const UserPage = (props) => {
             if(e.currentTarget === e.target) setDisplayRenameBoard(false);
     },[setDisplayRenameBoard, displayRenameBoard]);
 
+    const onSubmitRename = useCallback(() => setDisplayRenameBoard(false));
+
     const handleSetActive = useCallback((e) => {
         if(!menuActive) setMenuActive({ id: e.target.getAttribute('data-id'), title: e.target.getAttribute('data-title') });
         else setMenuActive(false);
@@ -109,14 +111,16 @@ const UserPage = (props) => {
             setMenuActive(false); // closes action menu
         }, [deleteBoard, setMenuActive, menuActive]);
 
+    const handleUpdateBoards = useCallback((data) => setBoardData(data), [setBoardData]);
+
     return(
-        <UserContainer
-        >
-            { displayAddBoard && <AddBoardOverlay handleClick={ closeAddBoardOverlay } />}
+        <UserContainer>
+            { displayAddBoard && <AddBoardOverlay handleClick={ closeAddBoardOverlay }/>}
             { displayRenameBoard && <RenameBoardOverlay 
                 handleClick={ closeRenameOverlay } 
-                currentBoard={displayRenameBoard} 
-                returnHome={returnHome}
+                currentBoard={ displayRenameBoard } 
+                handleUpdateBoards={ handleUpdateBoards }
+                onSubmitRename={onSubmitRename}
             />}
             <HeaderContainer>
                 <Heading onClick={returnHome}>Yello</Heading>

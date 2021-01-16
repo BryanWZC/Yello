@@ -1,6 +1,10 @@
 // External modules
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+
+// Internal modules
+import { handleSubmitRename } from '../utility/general';
 
 const OverlayContainer = styled.div`
     width: 100%;
@@ -66,7 +70,9 @@ const SubmitRename = styled.input`
 `;
 
 const RenameBoardOverlay = (props) => {
-    const { handleClick, currentBoard } = props;
+    const { handleClick, currentBoard, handleUpdateBoards, onSubmitRename } = props;
+    const [title, setTitle] = useState(null);
+    const boardId = currentBoard.id;
     return(
         <OverlayContainer onClick={ handleClick }>
             <RenameBoardContainer>
@@ -76,12 +82,14 @@ const RenameBoardOverlay = (props) => {
                         type='text'
                         autoComplete='off'
                         name='boardTitle'
+                        onChange={(e) => setTitle(e.target.value)}
+                        autoFocus
                         required
                     />
-                    <input type='hidden' name='boardId' value={currentBoard.id}/>
                     <SubmitRename 
                         type='submit'
                         value='Submit'
+                        onClick={ async(e) => await handleSubmitRename(e, { handleUpdateBoards, onSubmitRename, boardId, title })}
                     />
                 </RenameBoardForm>
             </RenameBoardContainer>

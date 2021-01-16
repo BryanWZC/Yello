@@ -61,7 +61,7 @@ router.route('/post/renameBoard')
     .post(async(req, res) => {
         try {
             const { boardTitle, boardId } = req.body;
-            const { _id } = req.body;
+            const { _id } = req.user;
             const { boards } = req.session.passport;
             if(!boardTitle || !boardId) throw new Error('No Board Title or Id provided');
 
@@ -72,10 +72,9 @@ router.route('/post/renameBoard')
                 }
                 return board;
             });
-
             req.session.passport.boards = newBoards;
             await updateUser(_id, newBoards);
-            res.redirect('/user/' + req.user.username.match(/^.+(?=\@)/));
+            res.json(newBoards);
         } catch (err) {
             console.log(err);
             res.end();

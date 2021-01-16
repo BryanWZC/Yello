@@ -10,7 +10,7 @@ import { handleCardDelete, toggleRenameOverlay } from '../slices/card-menu-slice
 const Container = styled.div`
     position: absolute;
     width: 160px;
-    height: 200px;
+    height: 100px;
     left: ${props => props.offsets.left}px;
     top: ${props => props.offsets.top}px;
     display: flex;
