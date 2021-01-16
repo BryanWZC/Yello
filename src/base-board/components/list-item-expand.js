@@ -7,7 +7,7 @@ import ContentEditable from 'react-contenteditable';
 // internal modules
 import * as select from '../selectors/selectors';
 import * as util from '../utility/general';
-import { handleTextareaExpand, handleItemContent, handleItemDelete, overlayOnClick } from '../slices/item-menu-slice';
+import { handleTextareaExpand, handleItemContent, handleItemDelete, overlayOnClick, updateTitle } from '../slices/item-menu-slice';
 
 const Overlay = styled.div`
     display: flex;
@@ -30,16 +30,19 @@ const ItemContainer = styled.div`
     background-color: #f4f5f7;
 `;
 
-const Title = styled.h3`
-    width: 100%;
+const Title = styled(ContentEditable)`
+    width: calc(100% - 25px);
     margin-bottom: 8px;
     overflow-wrap: break-word;
     padding-right: 20px;
+    font-weight: bold;
+    font-size: 20px;
 `;
-    
+
 const Desc = styled.p`
     width: 100%;
     margin-bottom: 24px;
+    color: #737482;
     overflow-wrap: break-word;
 `;
 
@@ -122,6 +125,7 @@ const ListItemExpand = (props) => {
     const inputExpand = useSelector(select.itemMenuExpandInput);
 
     const text = useRef(item.content);
+    const titleText = useRef(item.title);
 
     return(
         <Overlay
@@ -129,7 +133,18 @@ const ListItemExpand = (props) => {
             onClick={(e) => dispatch(overlayOnClick(e))}
         >
             <ItemContainer>
-                <Title>{item.title}</Title>
+                <Title
+                    html={titleText.current}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        if(val === '<div><br></div>') titleText.current = '';
+                        else titleText.current = e.target.value;
+                    }}
+                    onKeyDown={(e) => {
+                        if(e.key == "Enter") e.target.blur();
+                    }}
+                    onBlur={() => dispatch(handleItemContent({ title: titleText.current }))}
+                />
                 <Desc>From {card.title}</Desc>
                 <ContentContainer 
                     id='item-content-input' 
@@ -137,7 +152,7 @@ const ListItemExpand = (props) => {
                         dispatch(handleTextareaExpand());
                     }}
                     html={text.current}
-                    onBlur={(e) => dispatch(handleItemContent(text.current))}
+                    onBlur={() => dispatch(handleItemContent({ content: text.current }))}
                     onChange={(e) => {
                         const val = e.target.value;
                         if(val === '<div><br></div>') text.current = '';

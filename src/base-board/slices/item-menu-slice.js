@@ -2,7 +2,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 // Internal modules
-import { checkMenuElement, updateDBItemContent, updateDBItemDelete } from '../utility/update-item-menu';
+import { checkMenuElement, updateDBItemContent, updateDBItemDelete, updateDBItemTitle } from '../utility/update-item-menu';
 import { boardData } from './board-slice';
 
 /**
@@ -10,7 +10,7 @@ import { boardData } from './board-slice';
  */
 const handleItemContent = createAsyncThunk(
     'itemMenu/handleItemContent',
-    async(content, { getState }) => {
+    async({ content, title }, { getState }) => {
         const { mode, boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
         const cardIndex = boardData.cardIds.map(card => card._id).indexOf(cardId);
@@ -18,9 +18,15 @@ const handleItemContent = createAsyncThunk(
         const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
         const item = card.listIds[itemIndex];
 
-        if(item.content !== content) {
-            if(mode === 'USER') await updateDBItemContent(item, content);
-            return { cardIndex, itemIndex, content };
+        if(mode === 'USER') {
+            if(content && item.content !== content) {
+                await updateDBItemContent(item, content);
+                return { cardIndex, itemIndex, content };
+            }
+            if(title && item.title !== title) {
+                await updateDBItemTitle(item, title);
+                return { cardIndex, itemIndex, title };
+            }
         }
         return;
 });
@@ -105,7 +111,7 @@ export const itemMenuData = createSlice({
             state.expandInput = false;
             state.cardId = '';
             state.itemId = '';
-        }
+        },
     }
 });
 

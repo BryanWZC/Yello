@@ -127,15 +127,25 @@ router.route('/update/list-order')
     });
 
 /**
- * Updates list item content on db
+ * Updates list item content in db
  */
 router.route('/update/item-content')
     .post(async(req, res) => {
         const { _id, content } = req.body;
-        console.log(content)
         await base.updateItemContent({ _id, content });
         res.end();
     });
+
+/**
+ * Updates list title in db
+ */
+router.route('/update/item-title')
+    .post(async(req, res) => {
+        const { _id, title } = req.body;
+        console.log(title)
+        await base.updateItemTitle({ _id, title });
+        res.end();
+    })
 
 /**
  * Deletes an item from item doc and card itemIds list within its doc

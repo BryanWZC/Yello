@@ -20,6 +20,15 @@ export async function updateDBItemContent(itemData, content) {
 }
 
 /**
+ * Makes a call to the server to update item title in DB.
+ * @param {Object} itemData - current item data object
+ * @param {String} title  - inputted new title
+ */
+export async function updateDBItemTitle(itemData, title) {
+    await axios.post('/board/update/item-title', {...itemData, title });
+}
+
+/**
  * Makes a call to server to delete item and update in DB.
  * @param {String} cardId - current card id
  * @param {String} itemId - current item id

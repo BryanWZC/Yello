@@ -57,6 +57,14 @@ async function updateItemContent({ _id, content }) {
 }
 
 /**
+ * Updates list item in db given new title
+ * @param {Object} { _id, title } - object containing list item parameters to update
+ */
+async function updateItemTitle({ _id, title }) {
+    await List.findByIdAndUpdate(_id, { title }, { useFindAndModify: false });
+}
+
+/**
  * Updates db to change title of card to new title
  * @param {Object} { _id, title } - object containing card id and new title 
  */
@@ -89,6 +97,7 @@ module.exports = {
         updateCardOrder,
         updateListOrder,
         updateItemContent,
+        updateItemTitle,
         updateCardTitle,
         deleteItem,
         deleteCard,

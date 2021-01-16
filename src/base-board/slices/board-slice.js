@@ -209,8 +209,9 @@ export const boardData = createSlice({
         },
         [handleItemContent.fulfilled]: (state, { payload }) => {
             if(!payload) return;
-            const { cardIndex, itemIndex, content } = payload;
-            state.boardData.cardIds[cardIndex].listIds[itemIndex].content = content;
+            const { cardIndex, itemIndex, content, title } = payload;
+            if(title) state.boardData.cardIds[cardIndex].listIds[itemIndex].title = title;
+            if(content) state.boardData.cardIds[cardIndex].listIds[itemIndex].content = content;
         },
         [handleItemDelete.fulfilled]: (state, { payload }) => {
             const { cardId, listIds } = payload;
