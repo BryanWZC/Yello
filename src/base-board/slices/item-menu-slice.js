@@ -81,8 +81,11 @@ export const itemMenuData = createSlice({
         overlayOnClick: {
             reducer: (state, { payload }) => {
                 if(payload === 'WRITING CONTENT') return;
-                if(state.expandInput) state.expandInput = false;
+                if(state.expandInput) {
+                    state.expandInput = false;
+                }
                 else {
+                    if(payload === 'NO ACTION') return;
                     state.displayItemMenu = false;
                     state.cardId = '';
                     state.itemId = '';
@@ -94,6 +97,7 @@ export const itemMenuData = createSlice({
             prepare: (e) => {
                 e.persist();
                 if(e.target.getAttribute('id') === 'item-content-input') return { payload: 'WRITING CONTENT' };
+                if(e.target !== e.currentTarget) return { payload: 'NO ACTION' }
                 return { payload: 'RESET VALUES' };
             }
         },
