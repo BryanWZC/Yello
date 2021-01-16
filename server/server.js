@@ -8,6 +8,7 @@ const cookieParser      = require('cookie-parser');
 const passport          = require('passport');
 const LocalStrategy     = require('passport-local').Strategy;
 const express = require('express');
+const helmet = require('helmet');
 const app = express();
 
 // Internal modules - DB 
@@ -26,7 +27,8 @@ const unsplashRoutes = require('./routes/unsplash-routes');
 const { catchNotFoundError, errorHandler }  = require('./utility/server-utils');
 
 // Middleware
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('./assets'));

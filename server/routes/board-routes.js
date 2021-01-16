@@ -36,7 +36,6 @@ router.route('/get/board')
     try {
         const boards = req.user.boards.map(obj => obj._id);
         const { boardId } = req.query;
-        console.log(boards, boardId)
         if(!boards.includes(boardId)) throw new Error('No Board for user found!');
         const boardDoc = await Board.findById(boardId).lean().exec();
         res.json(boardDoc);
@@ -142,7 +141,6 @@ router.route('/update/item-content')
 router.route('/update/item-title')
     .post(async(req, res) => {
         const { _id, title } = req.body;
-        console.log(title)
         await base.updateItemTitle({ _id, title });
         res.end();
     })
@@ -163,7 +161,6 @@ router.route('/delete/item')
 router.route('/delete/card')
     .post(async(req, res) => {
         const { boardId, cardId } = req.body;
-        console.log(boardId, cardId)
         await base.deleteCard({ boardId, cardId });
         res.end();
     });

@@ -25,7 +25,6 @@ router.route('/post/background')
         const { title, boardId, backgroundLink, thumb, blurHash } = req.body;
         const user = req.user;
         req.session.passport.boards = await unsplash.updateBackground({ title, user, boardId, backgroundLink, thumb, blurHash });
-        console.log(req.session.passport)
         res.end();
     });
 

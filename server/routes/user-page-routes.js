@@ -123,12 +123,3 @@ router.route('/dist/userPage.js')
 
 
 module.exports = router;
-
-/**
- * TODO:
- *     5.2 Allow the board titles, card titles and list titles to be editable by adding a board actions, card actions and list actions to it.
- * 6. Beautify the user page with animations for when there are no boards...look into designs for it.
- * 7. Enable email verification with the whoisxmlapi
- *     7.1 Send a verified email to users upon sign up (maybe)
- * 8. Include helmet.js for security purposes
- */
