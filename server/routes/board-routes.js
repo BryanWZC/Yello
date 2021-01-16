@@ -132,6 +132,7 @@ router.route('/update/list-order')
 router.route('/update/item-content')
     .post(async(req, res) => {
         const { _id, content } = req.body;
+        console.log(content)
         await base.updateItemContent({ _id, content });
         res.end();
     });

@@ -10,8 +10,7 @@ import { boardData } from './board-slice';
  */
 const handleItemContent = createAsyncThunk(
     'itemMenu/handleItemContent',
-    async(e, { getState }) => {
-        e.persist();
+    async(content, { getState }) => {
         const { mode, boardData } = getState().boardData;
         const { cardId, itemId } = getState().itemMenuData;
         const cardIndex = boardData.cardIds.map(card => card._id).indexOf(cardId);
@@ -19,10 +18,6 @@ const handleItemContent = createAsyncThunk(
         const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
         const item = card.listIds[itemIndex];
 
-        const target = checkMenuElement(e);
-        const content = target.innerText.trim();
-        
-        if(content === '') target.innerHTML = "<pre id='item-content-input'></pre>";
         if(item.content !== content) {
             if(mode === 'USER') await updateDBItemContent(item, content);
             return { cardIndex, itemIndex, content };
@@ -96,7 +91,8 @@ export const itemMenuData = createSlice({
              */
             prepare: (e) => {
                 e.persist();
-                if(e.target.getAttribute('id') === 'item-content-input') return { payload: 'WRITING CONTENT' };
+                if(e.target.getAttribute('id') === 'item-content-input' || 
+                    e.target.parentNode.getAttribute('id') === 'item-content-input') return { payload: 'WRITING CONTENT' };
                 if(e.target !== e.currentTarget) return { payload: 'NO ACTION' }
                 return { payload: 'RESET VALUES' };
             }
@@ -113,6 +109,6 @@ export const itemMenuData = createSlice({
     }
 });
 
-export  const { handleTextareaExpand, handleItemClick, overlayOnClick, onBlurContent } = itemMenuData.actions;
+export const { handleTextareaExpand, handleItemClick, overlayOnClick, onBlurContent } = itemMenuData.actions;
 
 export { handleItemContent, handleItemDelete };

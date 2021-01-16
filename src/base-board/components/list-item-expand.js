@@ -1,7 +1,8 @@
 // External modules
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import ContentEditable from 'react-contenteditable';
 
 // internal modules
 import * as select from '../selectors/selectors';
@@ -42,7 +43,7 @@ const Desc = styled.p`
     overflow-wrap: break-word;
 `;
 
-const ContentContainer = styled.div`
+const ContentContainer = styled(ContentEditable)`
     width: 100%;
     min-height: ${props => props['data-expand'] ? '104px' : '62px'};
     margin-bottom: ${props => props['data-expand'] ? '8px' : '41px'};;
@@ -55,14 +56,10 @@ const ContentContainer = styled.div`
     font-family: 'Open Sans', sans-serif;
     font-size: 13px;
 
-    & > pre:empty::before {
+    &:empty::before {
         content: 'Add more details here...';
         color: gray;
     }
-`;
-
-const EditablePre = styled.pre`
-    white-space: pre-wrap;
 `;
 
 const Submit = styled.input`
@@ -124,6 +121,8 @@ const ListItemExpand = (props) => {
     const item = util.getItemFromId(cardId, itemId) || {};
     const inputExpand = useSelector(select.itemMenuExpandInput);
 
+    const text = useRef(item.content);
+
     return(
         <Overlay
             id='list-item-overlay'
@@ -132,24 +131,25 @@ const ListItemExpand = (props) => {
             <ItemContainer>
                 <Title>{item.title}</Title>
                 <Desc>From {card.title}</Desc>
-                <ContentContainer
-                    id='item-content-input'
-                    role='textarea'
-                    contentEditable='true'
-                    onClick={() => dispatch(handleTextareaExpand())}
-                    onBlur={(e) => dispatch(handleItemContent(e))}
+                <ContentContainer 
+                    id='item-content-input' 
+                    onClick={() => { 
+                        dispatch(handleTextareaExpand());
+                    }}
+                    html={text.current}
+                    onBlur={(e) => dispatch(handleItemContent(text.current))}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        if(val === '<div><br></div>') text.current = '';
+                        else text.current = e.target.value;
+                    }}
                     data-expand={ inputExpand ? true : false }
-                >
-                    <EditablePre id='item-content-input' onClick={() => dispatch(handleTextareaExpand())}>
-                        {item.content}
-                    </EditablePre>
-                </ContentContainer>
+                />
                 { inputExpand ? 
                     <Submit
                         type='submit'
                         name='submit'
                         value='Save'
-                        onClick={(e) => dispatch(handleItemContent(e))}
                     /> : 
                     null 
                 }
