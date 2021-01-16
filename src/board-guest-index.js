@@ -5,8 +5,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
 // Internal modules
-import { rootReducer } from './combine-slice-guest';
-import { Board } from './base-board-guest/components/board';
+// import { rootReducer } from './combine-slice-guest';
+// import { Board } from './base-board-guest/components/board';
+import { rootReducer } from './combine-slice';
+import { Board } from './base-board/components/board';
 
 const store = configureStore({ reducer: rootReducer });
 

@@ -8,6 +8,7 @@ import axios from 'axios';
 async function getBoard() {
     const location = window.location.href;
     const boardId = location.match(/[\w\d]+$/)[0];
+    if(boardId === 'guest') return;
     const { _id, cardIds, title, background, blurHash } = (await axios(`/board/get/board?boardId=${boardId}`)).data;
     return { _id, cardIds, title, background, blurHash };
 };
@@ -49,6 +50,7 @@ async function getListData(cardObj) {
  */
 export default async function getAllBoardData() {
     const board = await getBoard();
+    if(!board) return;
     const cardIds = await Promise.all(board.cardIds.map(async(cardId) => {
         const card = await getCard(cardId);
         const listIds = await getListData(card);

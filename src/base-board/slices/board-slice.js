@@ -6,7 +6,7 @@ import getAllBoardData from '../utility/get-state';
 import addNewCard from '../utility/add-card';
 import { addNewListItem } from '../utility/add-list';
 import * as dragUtil from '../utility/drag-end';
-import * as guest from '../../base-board-guest/guest-mode';
+import * as guest from '../utility/guest-mode';
 
 // Internal modules - slices
 import { handleCardDelete } from './card-menu-slice';
@@ -19,7 +19,9 @@ const getBoardData = createAsyncThunk(
     async(__, { getState }) => {
         try {
             const { mode } = getState().boardData;
-            return (mode === 'GUEST') ? guest.guestBoard : await getAllBoardData();
+            const boardData = await getAllBoardData();
+            if(!boardData) return { mode: 'GUEST', boardData: guest.guestBoard};
+            return {mode: 'USER', boardData: boardData};
         } catch (err) {
             return err;
         }
@@ -172,7 +174,9 @@ export const boardData = createSlice({
     },
     extraReducers: {
         [getBoardData.fulfilled]: (state, { payload }) => {
-            const { _id, cardIds, title, background, blurHash } = payload;
+            const { mode, boardData } = payload;
+            const { _id, cardIds, title, background, blurHash } = boardData;
+            if(mode === 'GUEST') state.mode = 'GUEST';
             state.boardData = { _id, cardIds, title };
             state.background = background;
             state.blurHash = blurHash;
