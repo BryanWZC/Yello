@@ -37,7 +37,6 @@ const BoardTitle = styled.h3`
     @media (max-width: 530px) {
         font-size: 14px;
     }
-
 `;
 
 const MiddleContainer = styled.div`
@@ -87,7 +86,6 @@ const BackgroundText = styled.h3`
     @media (max-width: 530px) {
         font-size: 12px;
     }
-
 `;
 
 const Heading = (props) => {

@@ -23,3 +23,8 @@ export const getItemFromId = (cardId, itemId) => {
     const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
     return card.listIds[itemIndex];
 }
+
+/**
+ * Returns to main user page
+ */
+export const returnHome = async () => window.location.href = '/';
