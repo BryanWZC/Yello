@@ -43,11 +43,27 @@ const DataContainer = styled.div`
     height: 100% - 40px;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: 850px) {
+        width: 460px;
+    }
+
+    @media (max-width: 530px) {
+        width: 210px;
+    }
 `;
 
 const BoardsTitle = styled.h1`
     margin-bottom: 12px;
     font-size: 36px;
+
+    @media (max-width: 850px) {
+        font-size: 32px;
+    }
+
+    @media (max-width: 530px) {
+        font-size: 24px;
+    }
 `;
 
 const AddBoardButton = styled.button`
@@ -63,6 +79,11 @@ const AddBoardButton = styled.button`
 
     &:hover {
         background-color: #E0BB00;
+    }
+
+    @media (max-width: 850px) {
+        font-size: 12px;
+        width: 150px;
     }
 `;
 

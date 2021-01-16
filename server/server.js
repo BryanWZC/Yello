@@ -28,7 +28,9 @@ const { catchNotFoundError, errorHandler }  = require('./utility/server-utils');
 
 // Middleware
 // app.use(morgan('dev'));
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('./assets'));
@@ -64,10 +66,3 @@ app.listen(PORT, async () => {
     await connect();
     console.log('Server is running. Listening on port 3000.');
 });
-
-/**
- * Last Summary: Finished sign-in and sign-up page design. 
- * TODO1: Finish main user page design and allow to add boards.
- * 
- * TODO2: Configure all routes such that it goes to /users then to /boards. Also do not allow outside access to any routes from /board by checking req.user and ensure that req.user provides the id such that it is easy to search for the user's board 
- */

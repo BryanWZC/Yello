@@ -62,11 +62,11 @@ async function updateBoardTitle(boardId, boardTitle) {
  * @param {String} boardId - Board id of current board to be deleted
  */
 async function deleteBoard(boardId) { // Can run async
-    let board = await Board.findByIdAndDelete(boardId);
+    let board = await Board.findByIdAndDelete(boardId).lean().exec();
 
     board.cardIds.map(async (cardId) => {
         const items = (await Card.findByIdAndDelete(cardId)).listIds;
-        items.map(async (itemId) => (await List.findOneAndDelete(itemId)));
+        items.map(async (itemId) => (await List.findByIdAndDelete(itemId)));
     });
 }
 

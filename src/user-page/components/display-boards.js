@@ -31,8 +31,24 @@ const BoardContainer = styled.div`
         margin: ${props => props.active ? '0 50px 50px 0' : '-5px 40px 40px -10px;'};
     }
 
-    &:nth-child(3n + 3) {
+    @media (min-width: 850px) {
+        &:nth-child(3n + 3) {
+            margin-right: 0;
+        }
+    }
+
+    @media (max-width: 850px) {
+        &:nth-child(2n + 2) {
+            margin-right: 0;
+        }
+    }
+
+    @media (max-width: 530px) {
         margin-right: 0;
+
+        &:hover {
+            margin: ${props => props.active ? '0 0 50px 0' : '-5px 0 45px -10px;'};
+        }
     }
 `;
 
@@ -41,7 +57,7 @@ const Image = styled.img`
     height: 100%;
     border-radius: 8px;
     object-fit: cover;
-    pointer-event: none;
+    pointer-events: none;
 `;
 
 const Overlay = styled.div`
