@@ -1,7 +1,6 @@
 // External modules
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 
 // Internal modules
 import { handleSubmitRename } from '../utility/general';
@@ -11,7 +10,7 @@ const OverlayContainer = styled.div`
     height: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     position: absolute;
     background-color: rgba(0,0,0,.64);
     z-index: 100;
@@ -20,10 +19,15 @@ const OverlayContainer = styled.div`
 const RenameBoardContainer = styled.div`
     position: absolute;
     width: 400px;
+    top: 250px;
     border: none;
     border-radius: 5px;
     padding: 16px;
     background-color: #f4f5f7;
+
+    @media (max-width: 530px) {
+        width: 290px;
+    }
 `;
 
 const RenameBoardForm = styled.form`

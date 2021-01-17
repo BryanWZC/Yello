@@ -1,7 +1,6 @@
 // External modules
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 
 // Internal modules
 import AddBoardOverlay from './add-board-overlay';

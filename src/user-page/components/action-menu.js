@@ -43,6 +43,7 @@ const Menu = styled.div`
     &:focus {
         outline: none;
     }
+
 `;
 
 const Title = styled.p`

@@ -35,11 +35,21 @@ const BoardContainer = styled.div`
         &:nth-child(3n + 3) {
             margin-right: 0;
         }
+
+        &:nth-child(3n + 3) > div:last-child > div{
+            right: 0;
+            left: auto;
+        }
     }
 
     @media (max-width: 850px) {
         &:nth-child(2n + 2) {
             margin-right: 0;
+        }
+
+        &:nth-child(2n + 2) > div:last-child > div{
+            right: 0;
+            left: auto;
         }
     }
 
@@ -48,6 +58,11 @@ const BoardContainer = styled.div`
 
         &:hover {
             margin: ${props => props.active ? '0 0 50px 0' : '-5px 0 45px -10px;'};
+        }
+
+        &:nth-child(n + 1) > div:last-child > div{
+            right: 0;
+            left: auto;
         }
     }
 `;
