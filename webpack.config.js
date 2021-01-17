@@ -5,7 +5,7 @@ const nodeExternals = require('webpack-node-externals');
 const frontConfig = {
     target: 'web',
     mode: 'development',
-    watch: false,
+    watch: true,
     entry: {
         board: './src/board-index.js',
         guestBoard: './src/board-guest-index.js',

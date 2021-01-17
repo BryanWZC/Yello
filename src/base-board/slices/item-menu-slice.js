@@ -18,15 +18,13 @@ const handleItemContent = createAsyncThunk(
         const itemIndex = card.listIds.map(item => item._id).indexOf(itemId);
         const item = card.listIds[itemIndex];
 
-        if(mode === 'USER') {
-            if(content && item.content !== content) {
-                await updateDBItemContent(item, content);
-                return { cardIndex, itemIndex, content };
-            }
-            if(title && item.title !== title) {
-                await updateDBItemTitle(item, title);
-                return { cardIndex, itemIndex, title };
-            }
+        if(content && item.content !== content) {
+            await updateDBItemContent(item, content);
+            return { cardIndex, itemIndex, content };
+        }
+        if(title && item.title !== title) {
+            await updateDBItemTitle(item, title);
+            return { cardIndex, itemIndex, title };
         }
         return;
 });
