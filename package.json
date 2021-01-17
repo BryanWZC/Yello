@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "test unsplash utility": "jest ./src/unsplash-image-picker/utility/test/",
-    "start": "nodemon ./server/server.js",
+    "start": "node ./server/server.js",
     "build": "webpack --config ./webpack.config.js",
     "dev": "react-scripts start"
   },
