@@ -27,7 +27,7 @@ const unsplashRoutes = require('./routes/unsplash-routes');
 const { catchNotFoundError, errorHandler }  = require('./utility/server-utils');
 
 // Middleware
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(helmet({
     contentSecurityPolicy: false,
 }));

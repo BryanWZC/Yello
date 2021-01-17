@@ -10,7 +10,11 @@ const { User } = require('../db/model');
 const path = require('path');
 
 router.route('/')
-    .get((req, res) => res.sendFile(path.join(__dirname, '../../public', 'login.html')));
+    .get((req, res) => {
+        req.logOut();
+        req.session.passport = null;
+        res.sendFile(path.join(__dirname, '../../public', 'login.html'));
+    });
 
 router.route('/dist/login.js')
     .get((req, res) => res.sendFile(path.join(__dirname, '../../dist', 'login.js')));
