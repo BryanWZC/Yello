@@ -18,6 +18,10 @@ const Overlay = styled.div`
     min-width: 100%;
     min-height: 100%;
     background-color: rgba(0,0,0,.64);
+
+    @media (max-width: 530px) {
+        padding: 60px 0 80px;
+    }
 `;
 
 const ItemContainer = styled.div`
@@ -28,6 +32,14 @@ const ItemContainer = styled.div`
     border-radius: 5px;
     padding: 16px;
     background-color: #f4f5f7;
+
+    @media (max-width: 850px) {
+        width: 500px;
+    }
+
+    @media (max-width: 530px) {
+        width: 290px;
+    }
 `;
 
 const Title = styled(ContentEditable)`
