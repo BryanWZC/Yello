@@ -1,7 +1,7 @@
 # Yello: A Kaban-style task tracking board
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://yello-guest.herokuapp.com/)
-&nbsp;
+<!--[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://yello-guest.herokuapp.com/)
+&nbsp;-->
 
 Yello is a Kaban-style task tracking board. It has the following functionalities:
 - Drag and drop of card and list items.
